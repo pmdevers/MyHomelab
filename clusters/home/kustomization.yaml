@@ -5,6 +5,10 @@ resources:
 - ../base
 
 patches:
+- path: patches/environment-patch
+  target:
+    kind: Kustomization
+    name: flux-system
 - path: patches/postgress-metallb
   target:
     kind: HelmRelease
