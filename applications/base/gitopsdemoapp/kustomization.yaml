@@ -1,0 +1,36 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: im360
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  dependsOn:
+    - name: infrastructure
+  sourceRef:
+    kind: GitRepository
+    name: im360
+  path: ./.deploy/testing
+  prune: true
+  wait: true
+  timeout: 5m0s
+  postBuild:
+    substitute:
+      AZURE_TENTANT_ID: 79cf5d34-2273-4c45-ac22-6c55cba1438b
+      AZURE_KEY_VAULT: aab-test-weu-kv-03
+      AZURE_KEY_VAULT_READER_IDENTITY_CLIENT_ID: 7a05be2b-84a9-48e3-9339-4ed786324e04
+      PUBLIC_INTERNET_FACING_HOSTNAME: abnamro-test.smartplatforms.io
+      PRIVATE_IAG_HOSTNAME: abnamro-api-test.smartplatforms.io
+---
+apiVersion: source.toolkit.fluxcd.io/v1 
+kind: GitRepository 
+metadata: 
+  name: im360 
+  namespace: flux-system 
+spec: 
+  interval: 1m0s 
+  ref: 
+    branch: main 
+  secretRef: 
+    name: flux-system 
+  url: https://dev.azure.com/tjip/AbnAmro/_git/ABN360  
