@@ -1,3 +1,0 @@
-- op: replace
-  path: "/spec/chart/spec/version"
-  value: "15.5.x"

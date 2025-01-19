@@ -1,5 +1,0 @@
-- op: add
-  path: "/values/primary/service"
-  value: 
-    type: LoadBalancer
-    annotations: metallb.universe.tf/ip-allocated-from-pool=first-pool
