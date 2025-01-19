@@ -6,7 +6,7 @@ resources:
 - ../base
 
 patches:
-- path: patches/postgress-metallb
+- path: patches/postgress.yaml
   target:
     kind: HelmRelease
     name: postgresql

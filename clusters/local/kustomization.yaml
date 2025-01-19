@@ -4,3 +4,9 @@ kind: Kustomization
 resources:
 - flux-system
 - ../base
+
+patches:
+- path: patches/postgress.yaml
+  target:
+    kind: HelmRelease
+    name: postgresql
