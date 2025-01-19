@@ -50,11 +50,18 @@ Set the token with the following command
 
 ```bash
 export GITHUB_TOKEN=<GITHUB TOKEN>
-
 export ENVIRONMENT=local
+
+flux bootstrap github \
+    --token-auth \
+    --owner=pmdevers \
+    --repository=MyHomelab \
+    --branch=main \
+    --path=clusters/$ENVIRONMENT \
+    --personal \
+    --components-extra image-reflector-controller,image-automation-controller
 ```
 
-```bash
-flux bootstrap github --token-auth --owner=pmdevers --repository=MyHomelab --branch=main --path=clusters/$ENVIRONMENT --personal --components-extra image-reflector-controller,image-automation-controller
-```
-
+> [!WARNING]  
+> For ingress to start working en open a connection run the following command.  
+> `minikube tunnel &`
