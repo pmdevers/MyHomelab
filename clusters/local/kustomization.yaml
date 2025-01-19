@@ -4,9 +4,3 @@ kind: Kustomization
 resources:
   - flux-system
   - ../base
-
-patches:
-- path: patches/environment-patch
-  target:
-    kind: Kustomization
-    name: flux-system
