@@ -1,3 +1,0 @@
-- op: replace
-  path: "/spec/path"
-  value: ./clusters/local
