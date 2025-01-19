@@ -5,3 +5,4 @@ resources:
   - nginx.yaml
   - bitnami.yaml
   - jetstack.yaml
+  - metallb.yaml
