@@ -4,3 +4,4 @@ namespace: flux-system
 resources:
   - nginx.yaml
   - bitnami.yaml
+  - jetstack.yaml
