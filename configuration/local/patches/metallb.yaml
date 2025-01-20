@@ -1,0 +1,5 @@
+$patch: delete
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool

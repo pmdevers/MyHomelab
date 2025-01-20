@@ -5,6 +5,10 @@ resources:
 - ../base
 
 patches:
+- target:
+    kind: HelmRelease
+    name: metallb
+  path: patches/metallb.yaml
 - path: patches/postgress.yaml
   target:
     kind: HelmRelease

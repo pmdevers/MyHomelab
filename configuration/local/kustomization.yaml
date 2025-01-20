@@ -3,3 +3,11 @@ kind: Kustomization
 
 resources:
 - ../base
+
+patches:
+- target:
+    kind: IPAddressPool
+  path: patches/metallb.yaml
+- target:
+    kind: L2Advertisement
+  path: patches/metallb.yaml
