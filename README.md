@@ -50,14 +50,13 @@ Set the token with the following command
 
 ```bash
 export GITHUB_TOKEN=<GITHUB TOKEN>
-export ENVIRONMENT=local
 
 flux bootstrap github \
     --token-auth \
     --owner=pmdevers \
     --repository=MyHomelab \
     --branch=main \
-    --path=clusters/$ENVIRONMENT \
+    --path=clusters/local \
     --personal \
     --components-extra image-reflector-controller,image-automation-controller
 ```
