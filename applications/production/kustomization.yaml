@@ -6,5 +6,5 @@ resources:
 
 images:
   - name: ghcr.io/pmdevers/gitopsdemo
-    newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "gitopsdemo:gitopsdemo:name"}
-    newTag: v2.0.0 # {"$imagepolicy": "gitopsdemo:gitopsdemo:tag"}
+    newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "flux-system:gitopsdemo:name"}
+    newTag: v2.0.0 # {"$imagepolicy": "flux-system:gitopsdemo:tag"}
