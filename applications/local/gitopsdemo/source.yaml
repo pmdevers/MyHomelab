@@ -15,6 +15,6 @@ spec:
   wait: true
   timeout: 5m0s
   images:
-  - name: ghcr.io/pmdevers/gitopsdemo
-    newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "flux-system:gitopsdemo-local:name"}
-    newTag: main-e00849e-1737447880 # {"$imagepolicy": "flux-system:gitopsdemo-local:tag"}
+    - name: ghcr.io/pmdevers/gitopsdemo
+      newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "flux-system:gitopsdemo-local:name"}
+      newTag: main-e0909e9-1737456207 # {"$imagepolicy": "flux-system:gitopsdemo-local:tag"}
