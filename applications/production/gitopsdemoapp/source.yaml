@@ -14,3 +14,7 @@ spec:
   prune: true
   wait: true
   timeout: 5m0s
+  images:
+  - name: ghcr.io/pmdevers/gitopsdemo
+    newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "flux-system:gitopsdemo:name"}
+    newTag: main-e00849e-1737447880 # {"$imagepolicy": "flux-system:gitopsdemo:tag"}
