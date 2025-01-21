@@ -7,6 +7,7 @@ spec:
   interval: 10m0s
   dependsOn:
     - name: infrastructure
+    - name: configuration
   path: ./applications/production
   prune: true
   sourceRef:
