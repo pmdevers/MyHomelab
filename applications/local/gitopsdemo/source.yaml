@@ -17,4 +17,4 @@ spec:
   images:
     - name: ghcr.io/pmdevers/gitopsdemo
       newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "flux-system:gitopsdemo-local:name"}
-      newTag: main-e0909e9-1737456207 # {"$imagepolicy": "flux-system:gitopsdemo-local:tag"}
+      newTag: main-39dedae-1737462668 # {"$imagepolicy": "flux-system:gitopsdemo-local:tag"}
