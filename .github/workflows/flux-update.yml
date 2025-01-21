@@ -50,8 +50,6 @@ jobs:
         if: steps.verify_diff.outputs.changed == 'true'
         run: |
           BRANCH_NAME="update-flux-${{ matrix.environment }}-$(date +'%Y%m%d%H%M%S')"
-          git checkout -b "$BRANCH_NAME"
-          git push origin "$BRANCH_NAME"
       
       - name: pull-request 
         if: steps.verify_diff.outputs.changed == 'true'
