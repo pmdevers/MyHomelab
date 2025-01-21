@@ -14,7 +14,4 @@ patches:
   target:
     kind: ImageUpdateAutomation
     name: gitopsdemo
-images:
-- name: ghcr.io/pmdevers/gitopsdemo
-  newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "flux-system:gitopsdemo-local:name"}
-  newTag: main-e00849e-1737447880 # {"$imagepolicy": "flux-system:gitopsdemo-local:tag"}
+
