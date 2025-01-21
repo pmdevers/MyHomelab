@@ -21,6 +21,7 @@ Open a bash terminal and run the follwing commands
 this will install the following tools in the nix environment
 
 - git
+- gh
 - kubectl
 - k9s
 - fluxcd
@@ -49,7 +50,9 @@ Create a [GitHub Token](https://github.com/settings/tokens?type=beta) With the f
 Set the token with the following command
 
 ```bash
-export GITHUB_TOKEN=<GITHUB TOKEN>
+gh auth login
+
+export GITHUB_TOKEN=`gh auth token`
 
 flux bootstrap github \
     --token-auth \
@@ -62,5 +65,5 @@ flux bootstrap github \
 ```
 
 > [!WARNING]  
-> For ingress to start working en open a connection run the following command.  
-> `minikube tunnel &`
+> In Minikube for the Ingress to get an external IP you will to start a tunnel to do this run the following command
+> `minikube tunnel`
