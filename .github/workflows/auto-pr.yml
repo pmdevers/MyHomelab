@@ -1,0 +1,22 @@
+name: Flux Auto-PR
+on:
+  push:
+    branches:
+      - flux-image-updates
+
+permissions:
+  pull-requests: write
+
+env:
+  GH_TOKEN: ${{ github.token }}
+
+jobs:
+  pull-request:
+    name: Open PR to main
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      name: checkout
+    - name: pull-request
+      run: |
+        gh pr create --title "Pulling ${{ github.ref }} into main" --body ":crown: *An automated PR*"
