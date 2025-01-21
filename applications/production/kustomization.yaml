@@ -3,3 +3,8 @@ kind: Kustomization
 
 resources:
 - gitopsdemoapp
+
+images:
+  - name: ghcr.io/pmdevers/gitopsdemo
+    newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "gitopsdemo:gitopsdemo:name"}
+    newTag: v2.0.0 # {"$imagepolicy": "gitopsdemo:gitopsdemo:tag"}

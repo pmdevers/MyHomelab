@@ -1,0 +1,8 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImageRepository
+metadata:
+  name: gitopsdemo
+  namespace: gitopsdemo
+spec:
+  image: ghcr.io/pmdevers/gitopsdemo
+  interval: 5m

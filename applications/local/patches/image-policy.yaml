@@ -1,0 +1,10 @@
+- op: replace 
+  path: "/spec/policy" 
+  value:
+    numerical:
+      order: asc
+- op: replace
+  path: /spec/filterTags
+  value: 
+    pattern: '^main-[a-fA-F0-9]+-(?P<ts>.*)'
+    extract: '$ts'

@@ -3,4 +3,7 @@ kind: Kustomization
 
 resources:
 - gitrepository.yaml
+- image-repository.yaml
+- image-policy.yaml
+- image-automation.yaml
 - source.yaml

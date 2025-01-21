@@ -8,3 +8,15 @@ patches:
 - path: patches/source.yaml
   target:
     kind: Kustomization
+- path: patches/image-policy.yaml
+  target:
+    kind: ImagePolicy
+    name: gitopsdemo
+- path: patches/image-automation.yaml
+  target:
+    kind: ImageUpdateAutomation
+    name: gitopsdemo
+images:
+  - name: ghcr.io/pmdevers/gitopsdemo
+    newName: ghcr.io/pmdevers/gitopsdemo # {"$imagepolicy": "gitopsdemo:gitopsdemo:name"}
+    newTag: main-3a68c3f-1737411794 # {"$imagepolicy": "gitopsdemo:gitopsdemo:tag"}
