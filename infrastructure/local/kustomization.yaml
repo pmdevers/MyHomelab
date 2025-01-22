@@ -13,3 +13,7 @@ patches:
   target:
     kind: HelmRelease
     name: postgresql
+- path: patches/ingress.yaml
+  target:
+    kind: HelmRelease
+    name: ingress-nginx
