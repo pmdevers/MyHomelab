@@ -19,7 +19,7 @@ def "main setup" [] {
     $env.GITHUB_TOKEN = $token.token
 
     (
-        main kubernetes create
+        main create kubernetes
             --environment $environment
     )
 
