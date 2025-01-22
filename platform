@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+source scripts/environments.nu
 source scripts/fluxcd.nu
 source scripts/github.nu
 source scripts/kubernetes.nu
@@ -13,23 +14,25 @@ def "main setup" [] {
     rm --force .env
 
     let token = (main get github)
+    let environment = (main get environment)
 
     $env.GITHUB_TOKEN = $token.token
 
     (
         main kubernetes create
-            --environment "local"
+            --environment $environment
     )
 
     (
         main apply fluxcd
-           --environment "local"
+           --environment $environment   
     )
 }
 
 # Hello World
 def "main hello" [] {
 
-    print "hello world"
+    let environment = (main get environment)
+    print $environment
 
 }

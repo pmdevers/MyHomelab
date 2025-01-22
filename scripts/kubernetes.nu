@@ -1,10 +1,41 @@
 #!/usr/bin/env nu
 
-def --env "main kubernetes create" [
+def --env "main create kubernetes" [
     --environment = "local"
 ] {
 
     if $environment == "local" {
-        (minikube start)
+        {
+            kind: "Cluster"
+            apiVersion: "kind.x-k8s.io/v1alpha4"
+            nodes: [{
+                role: "control-plane"
+                kubeadmConfigPatches: ['kind: InitConfiguration
+nodeRegistration:
+  kubeletExtraArgs:
+    node-labels: "ingress-ready=true"'
+                ]
+                extraPortMappings: [{
+                    containerPort: 80
+                    hostPort: 80
+                    protocol: "TCP"
+                }, {
+                    containerPort: 443
+                    hostPort: 443
+                    protocol: "TCP"
+                }]
+            }]
+        } | to yaml | save $"kind.yaml" --force
+
+        kind create cluster --config kind.yaml
+    }	
+}
+
+def --env "main destroy kubernetes" [
+    --environment = "local"
+] {
+
+    if $environment == "local" {
+        kind delete cluster
     }	
 }
