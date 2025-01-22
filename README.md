@@ -5,12 +5,12 @@ Here is i store the state of my homelab
 
 You are running on *linux* or running in a *linux wsl* environment.
 
-To setup your environment we have depend on `nix-shell` to have an isolated environment and all required tools pre installed
+To setup your environment we have depend on `devbox` to have an isolated environment and all required tools pre installed
 
-To install `nix-shell` open a terminal and run the following command 
+To install `devbox` open a terminal and run the following command 
 
 ```bash
-sh <(curl -L https://nixos.org/nix/install) --no-daemon 
+curl -fsSL https://get.jetify.com/devbox | bash
 ```
 
 ## Getting Started
@@ -28,16 +28,10 @@ this will install the following tools in the nix environment
 - minikube
 
 ```bash
-nix-shell
+devbox shell
 ```
 
-## Start local kubernetes cluster
-
-```bash
-minikube start
-```
-
-## Flux CD Gitops
+## Authentication Token
 
 Create a [GitHub Token](https://github.com/settings/tokens?type=beta) With the following permissions
 
@@ -47,23 +41,18 @@ Create a [GitHub Token](https://github.com/settings/tokens?type=beta) With the f
 - **Metadata** - Read-only 
 - **Pull requests** - Read and write
 
-Set the token with the following command
+## Create environment
 
 ```bash
-gh auth login
-
-export GITHUB_TOKEN=`gh auth token`
-
-flux bootstrap github \
-    --token-auth \
-    --owner=pmdevers \
-    --repository=MyHomelab \
-    --branch=main \
-    --path=clusters/local \
-    --personal \
-    --components-extra image-reflector-controller,image-automation-controller
+platform setup
 ```
 
-> [!WARNING]  
-> In Minikube for the Ingress to get an external IP you will to start a tunnel to do this run the following command
-> `minikube tunnel`
+it will ask to provide the created github token.
+
+## Clean up
+
+to clean up the local environment run the following command
+
+```bash
+platform destroy kubernetes
+```

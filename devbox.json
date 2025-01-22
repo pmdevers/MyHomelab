@@ -9,12 +9,16 @@
     "k9s@latest",
     "fluxcd@latest",
     "starship@latest",
-    "kind@latest"
+    "kind@latest",
+    "omnictl@latest",
+    "talosctl@latest",
+    "kubelogin-oidc@latest"
   ],
   "shell": {
     "init_hook": [
       "chmod +x platform",
       "export PATH=$PATH:$PWD",
+      "export STARSHIP_CONFIG=$PWD/starship.toml",
       "eval \"$(starship init bash)\""
     ],
     "scripts": {}

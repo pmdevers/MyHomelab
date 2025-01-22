@@ -29,6 +29,20 @@ def "main setup" [] {
     )
 }
 
+# Get status
+def "main get status" [] {
+
+    (
+        flux get kustomizations 
+            --no-header  
+            | lines 
+            | each {|line | split column "\t" } 
+            | flatten 
+            | select column1 column4 column5
+            | rename Name Ready "Applied Version"
+    )
+}
+
 # Hello World
 def "main hello" [] {
 
