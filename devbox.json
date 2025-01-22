@@ -1,0 +1,21 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.7/.schema/devbox.schema.json",
+  "packages": [
+    "nushell@latest",
+    "minikube@latest",
+    "git@latest",
+    "gh@latest",
+    "kubectl@latest",
+    "k9s@latest",
+    "fluxcd@latest",
+    "starship@latest"
+  ],
+  "shell": {
+    "init_hook": [
+      "chmod +x platform",
+      "export PATH=$PATH:$PWD",
+      "eval \"$(starship init bash)\""
+    ],
+    "scripts": {}
+  }
+}
