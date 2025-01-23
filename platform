@@ -16,7 +16,7 @@ def "main setup" [] {
     let token = (main get github)
     let environment = (main get environment)
 
-    $env.GITHUB_TOKEN = $token.token
+    $env.GITHUB_TOKEN = $token
 
     (
         main create kubernetes

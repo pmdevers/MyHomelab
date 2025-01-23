@@ -16,5 +16,5 @@ def --env "main get github" [] {
 
     $"export GITHUB_TOKEN=($github_token)\n" | save --append .env
 
-    print "GitHub token saved to .env"
+    $github_token
 }
