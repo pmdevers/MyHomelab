@@ -9,7 +9,12 @@ def --env "main get github" [] {
         $github_token = $env.GITHUB_TOKEN
     }
 
+    if ($github_token == "") {
+        print "please run 'gh auth login' to authenticate with GitHub"
+        exit
+    }
+
     $"export GITHUB_TOKEN=($github_token)\n" | save --append .env
 
-    {token: $github_token}
+    print "GitHub token saved to .env"
 }

@@ -43,10 +43,3 @@ def "main get status" [] {
     )
 }
 
-# Hello World
-def "main hello" [] {
-
-    let environment = (main get environment)
-    print $environment
-
-}

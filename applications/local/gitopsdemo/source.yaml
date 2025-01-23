@@ -10,7 +10,7 @@ spec:
   sourceRef:
     kind: GitRepository
     name: gitopsdemo
-  path: ./deploy/production
+  path: ./deploy/local
   prune: true
   wait: true
   timeout: 5m0s
