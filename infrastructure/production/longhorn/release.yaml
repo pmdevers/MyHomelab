@@ -13,4 +13,22 @@ spec:
         name: longhorn
         namespace: flux-system
       version: v1.8.0
+  values:
+    defaultSettings:
+      createDefaultDisk: true
+      defaultReplicaCount: 2
+
+    # Security adjustments to comply with restricted PodSecurity
+    securityContext:
+      runAsNonRoot: true
+      seccompProfile:
+        type: "RuntimeDefault"
+    
+    global:
+      # Ensure containers drop all capabilities
+      securityContext:
+        allowPrivilegeEscalation: false
+        capabilities:
+          drop: ["ALL"]
+        privileged: false
   interval: 1m0s
