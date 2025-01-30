@@ -10,6 +10,7 @@ spec:
   tls:
     - hosts:
         - www.patrick-evers.nl
+        - patrick-evers.nl
       secretName: website
   rules:
     - host: www.patrick-evers.nl
