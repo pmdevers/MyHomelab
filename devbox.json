@@ -19,6 +19,7 @@
       "chmod +x platform",
       "export PATH=$PATH:$PWD",
       "export STARSHIP_CONFIG=$PWD/starship.toml",
+      "export KUBECONFIG=${PWD}/kubeconfig.yaml¨,
       "eval \"$(starship init bash)\"",
       "clear"
     ],
