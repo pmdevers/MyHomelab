@@ -8,7 +8,6 @@ spec:
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
-    namespace: cert-manager
   dnsNames:
     - "www.patrick-evers.nl"
     - "patrick-evers.nl"
