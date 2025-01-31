@@ -4,14 +4,14 @@ metadata:
   name: webserver-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
-    cert-manager.io/issuer: letsencrypt-prod
+    cert-manager.io/cluster-issuer: "letsencrypt"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
         - www.patrick-evers.nl
         - patrick-evers.nl
-      secretName: website
+      secretName: patrick-evers-tls-secret
   rules:
     - host: www.patrick-evers.nl
       http:
