@@ -16,5 +16,5 @@ spec:
   timeout: 5m0s
   images:
     - name: ghcr.io/pmdevers/patrick-evers
-      newName: ghcr.io/pmdevers/patrick-evers # {"$imagepolicy": "flux-system:gitopsdemo:name"}
-      newTag: v1.0.0 # {"$imagepolicy": "flux-system:gitopsdemo:tag"}
+      newName: ghcr.io/pmdevers/patrick-evers # {"$imagepolicy": "flux-system:patrick-evers:name"}
+      newTag: sha-306a92a # {"$imagepolicy": "flux-system:patrick-evers:tag"}

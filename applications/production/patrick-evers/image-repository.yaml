@@ -4,5 +4,5 @@ metadata:
   name: patrick-evers
   namespace: flux-system
 spec:
-  image: ghcr.io/pmdevers/patrick-evers.nl
+  image: ghcr.io/pmdevers/patrick-evers
   interval: 5m
