@@ -1,5 +1,6 @@
 #!/usr/bin/env nu
 
+source scripts/application.nu
 source scripts/environments.nu
 source scripts/fluxcd.nu
 source scripts/github.nu
@@ -43,3 +44,36 @@ def "main get status" [] {
     )
 }
 
+def "main add app" [
+] {
+
+    let name = (input "Application Name: " | str downcase) 
+    let repository = (input "Git Repository Url: ")
+    let branch = (input "Git Branch: " --default "main")
+    let imageName = (input "Image Name: " --default $"ghcr.io/pmdevers/($name)" | str downcase)
+    let type = (["tag", "buildnr"] | input list "Image Tag Format: ");
+    let policyType = $"($name)-($type)"
+    let current = (pwd | path basename)
+
+    let path = (input "Path Deployment: " --default $"./deploy/($current)");
+ 
+
+    print {
+        name: $name
+        repository: $repository,
+        branch: $branch,
+        image: $imageName,
+        policyType: $policyType
+    }
+
+    
+    mkdir $name
+    cd $name
+    
+    (create git-repository $name $repository $branch)
+    (create image-repository $name $imageName)
+    (create image-policy $name $name)
+    (create kustomize $name $name $policyType $imageName --path $path)
+    (create kustomization)
+    
+}

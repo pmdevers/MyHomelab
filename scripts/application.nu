@@ -1,10 +1,6 @@
 #!/usr/bin/env nu
 
-def main [] {
-
-}
-
-def "main create repository" [
+def "create git-repository" [
     name: string
     repository: string
     branch: string = "main"
@@ -27,15 +23,15 @@ def "main create repository" [
             },    
             url: $repository
         }
-    } | to yaml | save $"repository.yaml" --force
+    } | to yaml | save $"git-repository.yaml" --force
 }
 
-def "main kustomize" [
+def "create kustomize" [
     name: string,
     repositoryName: string,
-    --imageName: string =  "ghcr.io/pmdevers",
+    policyName: string,
+    imageName: string,
     --version: string = "v1.0.0",
-    --policyName: string = "gitopsdemo",
     --path: string = "./deploy/production"
 ] {
 
@@ -76,7 +72,7 @@ def "main kustomize" [
     | save "source.yaml" --force
 }
 
-def "main kustomization" [] {
+def "create kustomization" [] {
 
     let files = ls | where name ends-with "yaml";
 
@@ -92,4 +88,71 @@ def "main kustomization" [] {
     
 }
 
-def "main "
+def "create image-policy" [
+    name: string,
+    imageRepositoryName: string
+] {
+    {
+        apiVersion: "image.toolkit.fluxcd.io/v1beta2",
+        kind: "ImagePolicy",
+        metadata: {
+            name: $"($name)-tag",
+            namespace: "flux-system"
+        }
+        spec: {
+            imageRepositoryRef: {
+                name: $imageRepositoryName
+            },
+            filterTags: {
+                pattern: '^v(?P<semver>[0-9]*\.[0-9]*\.[0-9]*)'
+                extract: '$semver'
+            }
+            policy:{
+                semver: {
+                    range: '>=1.0.0'
+                }
+            }   
+        }
+    }  | to yaml | save "image-policy-tag.yaml" --force
+    
+    {
+        apiVersion: "image.toolkit.fluxcd.io/v1beta2",
+        kind: "ImagePolicy",
+        metadata: {
+            name: $"($name)-buildnr",
+            namespace: "flux-system"
+        }
+        spec: {
+            imageRepositoryRef: {
+                name: $imageRepositoryName
+            },
+            filterTags: {
+                pattern: '^main-[a-fA-F0-9]+-(?P<ts>.*)'
+                extract: '$ts'
+            }
+            policy:{
+                numerical: {
+                    order: 'asc'
+                }
+            }   
+        }
+    } | to yaml | save "image-policy-buildnr.yaml" --force
+}
+
+def "create image-repository" [
+    name: string,
+    image: string
+] {
+    {
+        apiVersion: "image.toolkit.fluxcd.io/v1beta2",
+        kind: "ImageRepository",
+        metadata: {
+            name: $name,
+            namespace: "flux-system"
+        },
+        spec: {
+            image: $image,
+            interval: "5m"
+        }
+    } | to yaml | save "image-repository.yaml" --force
+}

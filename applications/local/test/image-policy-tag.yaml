@@ -1,0 +1,14 @@
+apiVersion: image.toolkit.fluxcd.io/v1beta2
+kind: ImagePolicy
+metadata:
+  name: test-tag
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: test
+  filterTags:
+    pattern: ^v(?P<semver>[0-9]*\.[0-9]*\.[0-9]*)
+    extract: $semver
+  policy:
+    semver:
+      range: '>=1.0.0'
