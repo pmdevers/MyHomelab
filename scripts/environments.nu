@@ -1,3 +1,5 @@
+#!/usr/bin/env nu
+
 def --env "main get environment" [] {
 
     let environment = ls -s ./clusters/ 
