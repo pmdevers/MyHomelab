@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: kafka-adventure
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  dependsOn:
+  - name: infrastructure
+  sourceRef:
+    kind: GitRepository
+    name: kafka-adventure
+  path: ./deploy/production
+  prune: true
+  wait: true
+  timeout: 5m0s
+  images:
+  - name: ghcr.io/pmdevers/kafka-adventure
+    newName: ghcr.io/pmdevers/kafka-adventure # {"$imagepolicy": "flux-system:kafka-adventure-buildnr:name"}
+    newTag: v1.0.0 # {"$imagepolicy": "flux-system:kafka-adventure-buildnr:tag"}
