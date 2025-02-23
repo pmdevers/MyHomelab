@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - gitopsdemo
 - patrick-evers
+- kafka-adventure
