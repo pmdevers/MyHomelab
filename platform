@@ -17,6 +17,10 @@ def "main setup" [] {
     let token = (main get github)
     let environment = (main get environment)
 
+    if ($environment == "production") {
+        (main cloudflare (input "Cloudflare API Key: "))
+    }
+
     $env.GITHUB_TOKEN = $token
 
     (
@@ -76,4 +80,15 @@ def "main add app" [
     (create kustomize $name $name $policyType $imageName --path $path)
     (create kustomization)
     
+}
+
+
+def "main cloudflare" [
+    api_key: string
+] {
+    
+    (
+        kubectl create secret generic cloudflare-api-token-secret 
+            --from-literal=api-token=($api_key) --namespace cert-manager
+    )
 }
