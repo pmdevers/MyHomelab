@@ -17,4 +17,4 @@ spec:
   images:
   - name: ghcr.io/pmdevers/kafka-adventure
     newName: ghcr.io/pmdevers/kafka-adventure # {"$imagepolicy": "flux-system:kafka-adventure-buildnr:name"}
-    newTag: main-ab27247-1740754747 # {"$imagepolicy": "flux-system:kafka-adventure-buildnr:tag"}
+    newTag: main-aa5e243-1740755691 # {"$imagepolicy": "flux-system:kafka-adventure-buildnr:tag"}
