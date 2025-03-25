@@ -5,9 +5,10 @@ source scripts/environments.nu
 source scripts/fluxcd.nu
 source scripts/github.nu
 source scripts/kubernetes.nu
+source scripts/vault.nu
 
 def main [] {
-    platform --help
+    nu platform --help
 }
 
 def "main setup" [] {
@@ -31,6 +32,11 @@ def "main setup" [] {
     (
         main apply fluxcd
            --environment $environment   
+    )
+
+    (
+        main apply vault-secret
+            --environment $environment
     )
 }
 
