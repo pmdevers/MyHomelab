@@ -5,8 +5,10 @@ def "main apply vault-secret" [
     if ($environment == "local") {
         return
     }
-    
+
     (
-        kubectl create secret generic vault-token --from-literal=token=root
+        kubectl create secret generic vault-token 
+            --namespace external-secrets
+            --from-literal=token=root
     )
 }
