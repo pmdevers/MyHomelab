@@ -35,7 +35,7 @@ def "main setup" [] {
     )
 
     (
-        main apply vault-secret
+        main apply vault-secret (input "Vault Token: ")
             --environment $environment
     )
 }
