@@ -22,3 +22,5 @@ spec:
       initContainers:
         setDataDirOwnership:
           enabled: true
+    tuning:
+      enabled: false
