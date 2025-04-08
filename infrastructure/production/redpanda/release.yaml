@@ -4,35 +4,21 @@ metadata:
   name: redpanda
   namespace: redpanda
 spec:
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
   interval: 5m
   chart:
     spec:
       chart: redpanda
-      version: "5.7.9"  # Update to desired version
+      version: "5.7.*"
       sourceRef:
         kind: HelmRepository
         name: redpanda
-        namespace: flux-system
+        namespace: redpanda
+      interval: 1m
   values:
-    tls:
-      enabled: true
-      certManager:
-        enabled: true
     statefulset:
-      replicas: 3
-    resources:
-      requests:
-        cpu: 500m
-        memory: 1Gi
-      limits:
-        cpu: 1
-        memory: 2Gi
-    external:
-      enabled: true
-    console:
-      enabled: true
-    storage:
-      persistentVolume:
-        enabled: true
-        size: 10Gi
-        storageClass: nfs-client
+      initContainers:
+        setDataDirOwnership:
+          enabled: true
