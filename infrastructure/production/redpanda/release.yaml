@@ -19,6 +19,7 @@ spec:
       interval: 1m
   values:
     statefulset:
+      replicas: 1
       initContainers:
         setDataDirOwnership:
           enabled: true
