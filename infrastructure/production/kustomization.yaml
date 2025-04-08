@@ -9,4 +9,4 @@ resources:
 - metallb
 - nfs-provisioner
 - external-secrets
-- redpanda
+#- redpanda
