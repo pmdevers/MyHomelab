@@ -31,3 +31,8 @@ spec:
       enabled: true
     console:
       enabled: true
+    storage:
+      persistentVolume:
+        enabled: true
+        size: 10Gi
+        storageClass: nfs-client
