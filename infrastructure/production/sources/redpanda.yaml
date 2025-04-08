@@ -1,0 +1,8 @@
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: HelmRepository
+metadata:
+  name: redpanda
+  namespace: flux-system
+spec:
+  url: https://charts.redpanda.com
+  interval: 10m

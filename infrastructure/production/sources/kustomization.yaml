@@ -8,3 +8,4 @@ resources:
   - metallb.yaml
   - nfs-subdir.yaml
   - external-secrets.yaml
+  - redpanda.yaml

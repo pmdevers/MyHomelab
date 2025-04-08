@@ -1,0 +1,33 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: redpanda
+  namespace: redpanda
+spec:
+  interval: 5m
+  chart:
+    spec:
+      chart: redpanda
+      version: "5.7.9"  # Update to desired version
+      sourceRef:
+        kind: HelmRepository
+        name: redpanda
+        namespace: flux-system
+  values:
+    tls:
+      enabled: true
+      certManager:
+        enabled: true
+    statefulset:
+      replicas: 3
+    resources:
+      requests:
+        cpu: 500m
+        memory: 1Gi
+      limits:
+        cpu: 1
+        memory: 2Gi
+    external:
+      enabled: true
+    console:
+      enabled: true
