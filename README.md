@@ -1,5 +1,5 @@
 # MyHomelab
-Here is i store the state of my homelab
+Here is where I store the state of my homelab
 
 ## Prerequisite
 
