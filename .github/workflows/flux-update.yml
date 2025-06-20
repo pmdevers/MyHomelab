@@ -27,8 +27,8 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git checkout -b "update-flux-${{ matrix.environment }}"
-          git pull
+          git fetch --all
+          git checkout -b "update-flux-${{ matrix.environment }}" origin/main
       - name: Check for updates
         id: update
         run: |
@@ -49,7 +49,7 @@ jobs:
         run: |
           git add .
           git commit -m "Update ${{ matrix.environment }} to ${{ steps.update.outputs.flux_version }}"
-          git push origin "update-flux-${{ matrix.environment }}"
+          git push origin "update-flux-${{ matrix.environment }}" --force-with-lease
       - name: pull-request 
         if: steps.verify_diff.outputs.changed == 'true'
         run: |
