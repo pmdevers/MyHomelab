@@ -50,8 +50,24 @@ jobs:
           git add .
           git commit -m "Update ${{ matrix.environment }} to ${{ steps.update.outputs.flux_version }}"
           git push origin "update-flux-${{ matrix.environment }}" --force-with-lease
+
+      - name: Check if PR exists
+        id: check-pr
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          prs=$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --head "${{ github.ref_name }}" \
+            --base "main" \
+            --json title \
+            --jq 'length')
+          if (( prs > 0 )); then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: pull-request 
-        if: steps.verify_diff.outputs.changed == 'true'
+        if: steps.verify_diff.outputs.changed == 'true' && steps.check-pr.outputs.skip != 'true'
         run: |
           gh pr create --title "Update to ${{ steps.update.outputs.flux_version }}" --body "${{ steps.update.outputs.flux_version }}" --base main --head "update-flux-${{ matrix.environment }}"
               
