@@ -58,7 +58,7 @@ jobs:
         run: |
           prs=$(gh pr list \
             --repo "$GITHUB_REPOSITORY" \
-            --head "${{ github.ref_name }}" \
+            --head "update-flux-${{ matrix.environment }}" \
             --base "main" \
             --json title \
             --jq 'length')
