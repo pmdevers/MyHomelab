@@ -24,3 +24,7 @@ spec:
       name: op-credentials
       valuesKey: connect.credentials
       targetPath: connect.credentials
+    - kind: Secret
+      name: op-token  
+      valuesKey: token
+      targetPath: operator.token.value

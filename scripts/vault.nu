@@ -18,7 +18,7 @@ def "main apply vault-secret" [
     const vaults = "k8s"
     const k8s_cred_secret = "op-credentials"
     const k8s_token_secret = "op-token"
-    const namespace = "default"
+    const namespace = "onepassword"
 
     let token = (add_account --environment $environment)
 
@@ -33,7 +33,7 @@ def "main apply vault-secret" [
     let cred_b64 = (
         op connect server get $connect_name 
             --session $token --format json 
-            | encode base64
+            #| encode base64
         )
     (
         kubectl create secret generic $k8s_cred_secret 
