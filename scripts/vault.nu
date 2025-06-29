@@ -33,11 +33,11 @@ def "main apply vault-secret" [
     let cred_b64 = (
         op connect server get $connect_name 
             --session $token --format json 
-            #| encode base64
+            | encode base64
         )
     (
         kubectl create secret generic $k8s_cred_secret 
-            --from-literal=connect.credentials=($cred_b64)
+            --from-literal=1password-credentials.json=($cred_b64)
             -n $namespace
             --dry-run=client -o yaml
         | kubectl apply -f -

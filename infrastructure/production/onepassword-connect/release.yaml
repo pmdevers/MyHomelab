@@ -18,13 +18,4 @@ spec:
   values:
     connect:
       create: true
-      replicas: 2
-  valuesFrom:
-    - kind: Secret
-      name: op-credentials
-      valuesKey: connect.credentials
-      targetPath: connect.credentials
-    - kind: Secret
-      name: op-token  
-      valuesKey: token
-      targetPath: operator.token.value
+  
