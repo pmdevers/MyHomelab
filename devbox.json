@@ -12,7 +12,8 @@
     "kind@latest",
     "omnictl@latest",
     "talosctl@latest",
-    "kubelogin-oidc@latest"
+    "kubelogin-oidc@latest",
+    "_1password@latest"
   ],
   "shell": {
     "init_hook": [
@@ -20,6 +21,8 @@
       "export PATH=$PATH:$PWD",
       "export STARSHIP_CONFIG=$PWD/starship.toml",
       "export KUBECONFIG=$PWD/kubeconfig.yaml",
+      "export TALOSCONFIG=$PWD/talosconfig.yaml",
+      "export OMNICONFIG=$PWD/omniconfig.yaml",
       "eval \"$(starship init bash)\"",
       "clear"
     ],

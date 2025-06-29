@@ -30,13 +30,13 @@ def "main setup" [] {
     )
 
     (
-        main apply fluxcd
-           --environment $environment   
+        main apply vault-secret
+            --environment $environment
     )
 
     (
-        main apply vault-secret (input "Vault Token: ")
-            --environment $environment
+        main apply fluxcd
+           --environment $environment   
     )
 }
 

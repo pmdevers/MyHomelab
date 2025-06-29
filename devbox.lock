@@ -1,6 +1,54 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "_1password@latest": {
+      "last_modified": "2024-10-26T22:05:23Z",
+      "resolved": "github:NixOS/nixpkgs/86e78d3d2084ff87688da662cf78c2af085d8e73#_1password",
+      "source": "devbox-search",
+      "version": "2.30.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mmrryhcr5v1addp6xwwdyk3mj9a2dnff-1password-cli-2.30.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mmrryhcr5v1addp6xwwdyk3mj9a2dnff-1password-cli-2.30.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/b6m30bgb4vfd573zxn4iwl7ziv8zf0f4-1password-cli-2.30.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/b6m30bgb4vfd573zxn4iwl7ziv8zf0f4-1password-cli-2.30.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/8w5afy7pjciq84mxa6gjplrjnak8qaij-1password-cli-2.30.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/8w5afy7pjciq84mxa6gjplrjnak8qaij-1password-cli-2.30.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/r7n8qm9ws7xh9vzqd8zp9cswmcp071y8-1password-cli-2.30.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/r7n8qm9ws7xh9vzqd8zp9cswmcp071y8-1password-cli-2.30.0"
+        }
+      }
+    },
     "fluxcd@latest": {
       "last_modified": "2024-12-23T21:10:33Z",
       "resolved": "github:NixOS/nixpkgs/de1864217bfa9b5845f465e771e0ecb48b30e02d#fluxcd",
@@ -168,6 +216,10 @@
           "store_path": "/nix/store/iwq58rpn6idjnxbnyjh351776qzvsd0r-git-2.47.0"
         }
       }
+    },
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "last_modified": "2025-06-27T03:16:46Z",
+      "resolved": "github:NixOS/nixpkgs/80d50fc87924c2a0d346372d242c27973cf8cdbf?lastModified=1750994206&narHash=sha256-3u6rEbIX9CN%2F5A5%2Fmc3u0wIO1geZ0EhjvPBXmRDHqWM%3D"
     },
     "k9s@latest": {
       "last_modified": "2024-12-23T21:10:33Z",

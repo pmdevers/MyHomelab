@@ -9,5 +9,5 @@ resources:
 - metallb
 - nfs-provisioner
 - external-secrets
-#- oauth2-proxy
+- onepassword-connect
 #- redpanda

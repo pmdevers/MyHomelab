@@ -1,0 +1,7 @@
+contexts:
+    default:
+        url: https://pmdevers.omni.siderolabs.io
+        auth:
+            siderov1:
+                identity: pmdevers@gmail.com
+context: default

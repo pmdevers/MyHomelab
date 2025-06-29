@@ -10,3 +10,4 @@ resources:
   - external-secrets.yaml
   - redpanda.yaml
   - oauth2-proxy.yaml
+  - onepassword.yaml
