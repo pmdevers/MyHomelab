@@ -1,0 +1,50 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: oauth2-proxy
+  namespace: oauth2-proxy
+spec:
+  releaseName: oauth2-proxy
+  dependsOn:
+    - name: cert-manager
+      namespace: cert-manager
+    - name: external-secrets
+      namespace: flux-system
+  chart:
+    spec:
+      chart: oauth2-proxy
+      sourceRef:
+        kind: HelmRepository
+        name: oauth2-proxy
+        namespace: flux-system
+      version: "7.0.0"
+  valuesFrom:
+    - kind: Secret
+      name: oauth2-proxy-secrets
+      valuesKey: client-id
+      targetPath: extraArgs.client-id
+    - kind: Secret
+      name: oauth2-proxy-secrets
+      valuesKey: client-secret
+      targetPath: extraArgs.client-secret
+    - kind: Secret
+      name: oauth2-proxy-secrets
+      valuesKey: cookie-secret
+      targetPath: extraArgs.cookie-secret
+  values:
+    extraArgs:
+      provider: "google"
+      oidc-issuer-url: "https://accounts.google.com"
+      cookie-domain: ".patrick-evers.nl"
+      set-authorization-header: true
+      skip-provider-button: true
+      email-domain: "patrick-evers.nl"
+      redirect-url: "https://identity.patrick-evers.nl/oauth2/callback"
+    ingress:
+      enabled: true
+      className: nginx
+      hosts:
+        - identity.patrick-evers.nl
+      annotations:
+        nginx.ingress.kubernetes.io/auth-url: "https://identity.patrick-evers.nl/oauth2/auth"
+        nginx.ingress.kubernetes.io/auth-signin: "https://identity.patrick-evers.nl/oauth2/start?rd=$request_uri"
