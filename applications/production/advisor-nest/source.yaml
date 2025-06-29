@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: advisor-nest
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  dependsOn:
+    - name: infrastructure
+  sourceRef:
+    kind: GitRepository
+    name: advisor-nest
+  path: ./deploy/production
+  prune: true
+  wait: true
+  timeout: 5m0s
+  images:
+    - name: ghcr.io/pmdevers/advisor-nest
+      newName: ghcr.io/pmdevers/advisor-nest # {"$imagepolicy": "flux-system:advisor-nest:name"}
+      newTag: sha-0c12aba # {"$imagepolicy": "flux-system:advisor-nest:tag"}
