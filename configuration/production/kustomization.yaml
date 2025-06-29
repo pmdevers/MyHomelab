@@ -5,3 +5,4 @@ resources:
 - cert-manager
 - metallb
 - external-secrets
+- oauth2-proxy

@@ -4,3 +4,4 @@ resources:
 - gitopsdemo
 - patrick-evers
 - kafka-adventure
+- oauth2-proxy
