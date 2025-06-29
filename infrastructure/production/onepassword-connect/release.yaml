@@ -22,6 +22,5 @@ spec:
   valuesFrom:
     - kind: Secret
       name: op-credentials
-      namespace: default
       valuesKey: connect.credentials
       targetPath: connect.credentials
