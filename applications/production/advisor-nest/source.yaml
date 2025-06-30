@@ -17,4 +17,4 @@ spec:
   images:
     - name: ghcr.io/pmdevers/advisor-nest
       newName: ghcr.io/pmdevers/advisor-nest # {"$imagepolicy": "flux-system:advisor-nest:name"}
-      newTag: sha-4eff9d0 # {"$imagepolicy": "flux-system:advisor-nest:tag"}
+      newTag: sha-b814d5f # {"$imagepolicy": "flux-system:advisor-nest:tag"}
