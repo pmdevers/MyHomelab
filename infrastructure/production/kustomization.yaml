@@ -10,4 +10,4 @@ resources:
 - nfs-provisioner
 - external-secrets
 #- onepassword-connect
-#- redpanda
+- redpanda
