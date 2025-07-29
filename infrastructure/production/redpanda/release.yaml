@@ -20,8 +20,3 @@ spec:
   values:
     statefulset:
       replicas: 1
-      initContainers:
-        setDataDirOwnership:
-          enabled: true
-    tuning:
-      tune_aio_events: false
