@@ -9,9 +9,11 @@ spec:
     privateKeySecretRef:
       name: letsencrypt
     solvers:
-    - dns01:
+    - selector:
+        dnsZones:
+          - patrick-evers.nl
+      dns01:
         cloudflare:
-          email: pmdevers@gmail.com
           apiTokenSecretRef:
             name: cloudflare-api-token-secret
             key: api-token
