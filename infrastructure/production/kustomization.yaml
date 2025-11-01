@@ -5,7 +5,7 @@ resources:
 - sources
 - cert-manager
 - nginx
-- postgress
+#- postgress
 - metallb
 - nfs-provisioner
 - external-secrets
