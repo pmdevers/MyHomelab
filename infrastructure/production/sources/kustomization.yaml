@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: flux-system
 resources:
   - nginx.yaml
-  - bitnami.yaml
   - jetstack.yaml
   - metallb.yaml
   - nfs-subdir.yaml
