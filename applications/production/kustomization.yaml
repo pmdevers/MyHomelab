@@ -6,3 +6,4 @@ resources:
 - kafka-adventure
 #- oauth2-proxy
 - advisor-nest
+- adviseur-portaal
