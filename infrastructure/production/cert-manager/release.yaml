@@ -5,6 +5,7 @@ metadata:
   namespace: flux-system
 spec:
   releaseName: cert-manager
+  targetNamespace: cert-manager
   chart:
     spec:
       chart: cert-manager
@@ -12,11 +13,17 @@ spec:
         kind: HelmRepository
         name: jetstack
         namespace: flux-system
-      version: "1.x"
+      version: "v1.19.1"   # pin a concrete version
   values:
     installCRDs: true
-  targetNamespace: cert-manager
-  interval: 48h0m0s
+    extraArgs:
+      - --dns01-recursive-nameservers=1.1.1.1:53,8.8.8.8:53
+      - --dns01-recursive-nameservers-only
+  interval: 48h
   install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
     remediation:
       retries: 3
