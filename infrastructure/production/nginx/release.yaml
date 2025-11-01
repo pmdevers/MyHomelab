@@ -23,7 +23,7 @@ spec:
         proxy-buffers: 4 "512k"
         proxy-buffer-size: "256k"
       replicaCount: 2
-  interval: 1h0m0s
+  interval: 48h0m0s
   install:
     remediation:
       retries: 3

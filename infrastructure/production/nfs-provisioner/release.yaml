@@ -19,7 +19,7 @@ spec:
     nfs:
       server: 192.168.1.114
       path: /volume1/k8s
-  interval: 1h0m0s
+  interval: 48h0m0s
   install:
     remediation:
       retries: 3

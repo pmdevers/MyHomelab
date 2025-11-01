@@ -13,7 +13,7 @@ spec:
         name: metallb
         namespace: flux-system
       version: "0.14.x"
-  interval: 1h0m0s
+  interval: 48h0m0s
   install:
     remediation:
       retries: 3

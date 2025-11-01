@@ -16,7 +16,7 @@ spec:
         kind: HelmRepository
         name: redpanda
         namespace: flux-system
-      interval: 1m
+      interval: 48h0m0s
   values:
     statefulset:
       replicas: 1

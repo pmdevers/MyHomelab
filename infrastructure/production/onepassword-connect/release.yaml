@@ -13,7 +13,7 @@ spec:
         kind: HelmRepository
         name: onepassword
         namespace: flux-system
-      interval: 5m
+      interval: 48h0m0s
   releaseName: onepassword-connect
   values:
     connect:

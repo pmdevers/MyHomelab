@@ -16,7 +16,7 @@ spec:
   values:
     installCRDs: true
   targetNamespace: cert-manager
-  interval: 1h0m0s
+  interval: 48h0m0s
   install:
     remediation:
       retries: 3

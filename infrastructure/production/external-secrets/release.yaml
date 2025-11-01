@@ -15,4 +15,4 @@ spec:
       version: "0.14.x"
   install:
     createNamespace: true
-  interval: 1h0m0s
+  interval: 48h0m0s
