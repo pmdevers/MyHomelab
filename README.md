@@ -56,3 +56,17 @@ to clean up the local environment run the following command
 ```bash
 platform destroy kubernetes
 ```
+
+# Talos Omni Cluster Patches
+
+This allows scheduling on ControlPlanes
+In order for MetalLB to work we need to remove the label `node.kubernetes.io/exclude-from-external-load-balancers`
+
+```yaml
+cluster:
+  allowSchedulingOnControlPlanes: true
+machine:
+  nodeLabels:
+    node.kubernetes.io/exclude-from-external-load-balancers:
+      $patch: delete
+```
