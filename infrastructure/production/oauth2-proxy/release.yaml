@@ -19,19 +19,6 @@ spec:
         name: oauth2-proxy
         namespace: flux-system
       version: "7.0.0"
-  valuesFrom:
-    - kind: Secret
-      name: oauth2-proxy-secrets
-      valuesKey: client-id
-      targetPath: extraArgs.client-id
-    - kind: Secret
-      name: oauth2-proxy-secrets
-      valuesKey: client-secret
-      targetPath: extraArgs.client-secret
-    - kind: Secret
-      name: oauth2-proxy-secrets
-      valuesKey: cookie-secret
-      targetPath: extraArgs.cookie-secret
   values:
     extraArgs:
       provider: "google"
@@ -44,8 +31,11 @@ spec:
     ingress:
       enabled: true
       className: nginx
-      hosts:
-        - identity.patrick-evers.nl
+      tls:
+        - hosts:
+            - identity.patrick-evers.nl
+          secretName: identity-tls
       annotations:
+        cert-manager.io/cluster-issuer: letsencrypt
         nginx.ingress.kubernetes.io/auth-url: "https://identity.patrick-evers.nl/oauth2/auth"
         nginx.ingress.kubernetes.io/auth-signin: "https://identity.patrick-evers.nl/oauth2/start?rd=$request_uri"
