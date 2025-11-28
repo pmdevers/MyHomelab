@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
 - sources
 - cert-manager
+- oauth2-proxy
 - nginx
 #- postgress
 - metallb
