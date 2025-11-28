@@ -28,6 +28,8 @@ spec:
       skip-provider-button: true
       email-domain: "patrick-evers.nl"
       redirect-url: "https://identity.patrick-evers.nl/oauth2/callback"
+      cookie-expire: "168h"  # 7 days
+      cookie-refresh: "1h"   # Refresh token every hour
     ingress:
       enabled: true
       className: nginx
@@ -35,8 +37,6 @@ spec:
         - identity.patrick-evers.nl
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
-        #nginx.ingress.kubernetes.io/auth-url: "https://identity.patrick-evers.nl/oauth2/auth"
-        #nginx.ingress.kubernetes.io/auth-signin: "https://identity.patrick-evers.nl/oauth2/start?rd=$request_uri"
       tls:
         - secretName: identity-tls
           hosts:
