@@ -4,4 +4,4 @@ namespace: oauth2-proxy
 resources:
   - namespace.yaml
   - release.yaml
-  - secrets.yaml
+  #- secrets.yaml
