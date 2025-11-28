@@ -35,8 +35,8 @@ spec:
         - identity.patrick-evers.nl
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
-        nginx.ingress.kubernetes.io/auth-url: "https://identity.patrick-evers.nl/oauth2/auth"
-        nginx.ingress.kubernetes.io/auth-signin: "https://identity.patrick-evers.nl/oauth2/start?rd=$request_uri"
+        #nginx.ingress.kubernetes.io/auth-url: "https://identity.patrick-evers.nl/oauth2/auth"
+        #nginx.ingress.kubernetes.io/auth-signin: "https://identity.patrick-evers.nl/oauth2/start?rd=$request_uri"
       tls:
         - secretName: identity-tls
           hosts:
