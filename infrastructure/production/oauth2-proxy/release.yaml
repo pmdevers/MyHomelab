@@ -31,10 +31,13 @@ spec:
     ingress:
       enabled: true
       className: nginx
+      hosts:
+        - identity.patrick-evers.nl
       tls:
-        - hosts:
+        - secretName: identity-tls
+          hosts:
             - identity.patrick-evers.nl
-          secretName: identity-tls
+          
       annotations:
         cert-manager.io/cluster-issuer: letsencrypt
         nginx.ingress.kubernetes.io/auth-url: "https://identity.patrick-evers.nl/oauth2/auth"
