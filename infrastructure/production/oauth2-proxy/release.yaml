@@ -20,16 +20,23 @@ spec:
         namespace: flux-system
       version: "7.0.0"
   values:
+    config:
+      cookieName: "_oauth2_proxy"
     extraArgs:
       provider: "google"
       oidc-issuer-url: "https://accounts.google.com"
       cookie-domain: ".patrick-evers.nl"
+      whitelist-domain: ".patrick-evers.nl"
       set-authorization-header: true
+      set-xauthrequest: true
+      pass-access-token: true
       skip-provider-button: true
       email-domain: "patrick-evers.nl"
       redirect-url: "https://identity.patrick-evers.nl/oauth2/callback"
-      cookie-expire: "168h"  # 7 days
-      cookie-refresh: "1h"   # Refresh token every hour
+      cookie-expire: "168h"
+      cookie-refresh: "1h"
+      cookie-secure: true
+      cookie-httponly: true
     ingress:
       enabled: true
       className: nginx
