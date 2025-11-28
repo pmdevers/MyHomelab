@@ -4,6 +4,7 @@ metadata:
   name: oauth2-proxy
   namespace: oauth2-proxy
 spec:
+  interval: 5m
   releaseName: oauth2-proxy
   dependsOn:
     - name: cert-manager
@@ -12,7 +13,6 @@ spec:
       namespace: flux-system
   chart:
     spec:
-      interval: 5m
       chart: oauth2-proxy
       sourceRef:
         kind: HelmRepository
