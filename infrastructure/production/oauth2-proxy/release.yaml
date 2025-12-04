@@ -38,6 +38,8 @@ spec:
       cookie-refresh: "1h"
       cookie-secure: true
       cookie-httponly: true
+      cookie-samesite: "lax"
+      reverse-proxy: true
     ingress:
       enabled: true
       className: nginx
