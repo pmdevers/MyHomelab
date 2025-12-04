@@ -37,6 +37,10 @@ spec:
       cookie-refresh: "1h"
       cookie-secure: true
       cookie-httponly: true
+      reverse-proxy: true
+      skip-auth-strip-headers: false
+      upstream: "static://202"
+      skip-auth-regex: "^/ping$|^/oauth2/"
     ingress:
       enabled: true
       className: nginx
