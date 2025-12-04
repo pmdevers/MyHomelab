@@ -27,6 +27,7 @@ spec:
       oidc-issuer-url: "https://accounts.google.com"
       cookie-domain: ".patrick-evers.nl"
       whitelist-domain: ".patrick-evers.nl"
+      allowed-redirect-urls: "https://*.patrick-evers.nl/*"
       set-authorization-header: true
       set-xauthrequest: true
       pass-access-token: true
