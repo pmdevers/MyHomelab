@@ -1,0 +1,175 @@
+version: "3.9"
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+    devices:
+      - /dev/dri:/dev/dri   # AMD GPU VAAPI
+    ports:
+      - "8096:8096"
+    volumes:
+      - ./jellyfin/config:/config:Z
+      - ./jellyfin/cache:/cache:Z
+      - /var/mnt/media/movies:/movies
+      - /var/mnt/media/tv:/tv
+      - /var/mnt/media/music:/music
+      - /var/mnt/downloads:/downloads
+    security_opt:
+      - label=disable
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./prowlarr/config:/config:Z
+    ports:
+      - "9696:9696"
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./radarr/config:/config:Z
+      - /var/mnt/media/movies:/movies
+      - /var/mnt/downloads:/downloads
+    security_opt:
+      - label=disable
+    ports:
+      - "7878:7878"
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./sonarr/config:/config:Z
+      - /var/mnt/media/tv:/tv
+      - /var/mnt/downloads:/downloads
+    security_opt:
+      - label=disable
+    ports:
+      - "8989:8989"
+    restart: unless-stopped
+
+  sabnzbd:
+    image: lscr.io/linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+      - HOST_WHITELIST=*
+    volumes:
+      - ./sabnzbd/config:/config:Z
+      - /var/mnt/downloads:/downloads
+    security_opt:
+      - label=disable
+    ports:
+      - "8080:8080"
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+      - WEBUI_PORT=8082
+    volumes:
+      - ./qbittorrent/config:/config:Z
+      - /var/mnt/downloads:/downloads
+    security_opt:
+      - label=disable
+    ports:
+      - "8082:8082"
+      - "6881:6881"
+      - "6881:6881/udp"
+    restart: unless-stopped
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./bazarr/config:/config:Z
+      - /var/mnt/media/movies:/movies
+      - /var/mnt/media/tv:/tv
+    security_opt:
+      - label=disable
+    ports:
+      - "6767:6767"
+    restart: unless-stopped
+
+  recyclarr:
+    image: ghcr.io/recyclarr/recyclarr:latest
+    container_name: recyclarr
+    environment:
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./recyclarr/config:/config:Z
+    restart: unless-stopped
+
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: lidarr
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Europe/Amsterdam
+    volumes:
+      - ./lidarr/config:/config:Z
+      - /var/mnt/media/music:/music
+      - /var/mnt/downloads:/downloads
+    security_opt:
+      - label=disable
+    ports:
+      - "8686:8686"
+    restart: unless-stopped
+
+  navidrome:
+    image: deluan/navidrome:latest
+    container_name: navidrome
+    environment:
+      - ND_LOGLEVEL=info
+      - ND_SESSIONTIMEOUT=24h
+    volumes:
+      - ./navidrome/data:/data:Z
+      - /var/mnt/media/music:/music:ro
+    ports:
+      - "4533:4533"
+    restart: unless-stopped
+
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    ports:
+      - "8081:80"
+      - "8443:443"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:Z
+      - ./caddy/data:/data:Z
+      - ./caddy/config:/config:Z
+    restart: unless-stopped

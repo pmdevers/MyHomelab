@@ -1,0 +1,150 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8096
+    targetPort: 8096
+    name: http
+  selector:
+    app: jellyfin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prowlarr
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 9696
+    targetPort: 9696
+    name: http
+  selector:
+    app: prowlarr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: radarr
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 7878
+    targetPort: 7878
+    name: http
+  selector:
+    app: radarr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarr
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8989
+    targetPort: 8989
+    name: http
+  selector:
+    app: sonarr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sabnzbd
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8080
+    targetPort: 8080
+    name: http
+  selector:
+    app: sabnzbd
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8082
+    targetPort: 8082
+    name: webui
+  - port: 6881
+    targetPort: 6881
+    protocol: TCP
+    name: tcp-port
+  - port: 6881
+    targetPort: 6881
+    protocol: UDP
+    name: udp-port
+  selector:
+    app: qbittorrent
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bazarr
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 6767
+    targetPort: 6767
+    name: http
+  selector:
+    app: bazarr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: lidarr
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8686
+    targetPort: 8686
+    name: http
+  selector:
+    app: lidarr
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: navidrome
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 4533
+    targetPort: 4533
+    name: http
+  selector:
+    app: navidrome
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: caddy
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  - port: 443
+    targetPort: 443
+    name: https
+  selector:
+    app: caddy

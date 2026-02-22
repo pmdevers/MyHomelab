@@ -6,3 +6,4 @@ resources:
 - kafka-adventure
 #- advisor-nest
 - adviseur-portaal
+- jellyfin
