@@ -47,21 +47,17 @@ spec:
         persistentVolumeClaim:
           claimName: jellyfin-cache
       - name: movies
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/movies
+        persistentVolumeClaim:
+          claimName: nfs-movies
       - name: tv
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/tv
+        persistentVolumeClaim:
+          claimName: nfs-tv
       - name: music
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/music
+        persistentVolumeClaim:
+          claimName: nfs-music
       - name: downloads
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -139,13 +135,11 @@ spec:
         persistentVolumeClaim:
           claimName: radarr-config
       - name: movies
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/movies
+        persistentVolumeClaim:
+          claimName: nfs-movies
       - name: downloads
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -187,13 +181,11 @@ spec:
         persistentVolumeClaim:
           claimName: sonarr-config
       - name: tv
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/tv
+        persistentVolumeClaim:
+          claimName: nfs-tv
       - name: downloads
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -235,9 +227,8 @@ spec:
         persistentVolumeClaim:
           claimName: sabnzbd-config
       - name: downloads
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -285,9 +276,8 @@ spec:
         persistentVolumeClaim:
           claimName: qbittorrent-config
       - name: downloads
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -329,13 +319,11 @@ spec:
         persistentVolumeClaim:
           claimName: bazarr-config
       - name: movies
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/movies
+        persistentVolumeClaim:
+          claimName: nfs-movies
       - name: tv
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/tv
+        persistentVolumeClaim:
+          claimName: nfs-tv
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -406,13 +394,11 @@ spec:
         persistentVolumeClaim:
           claimName: lidarr-config
       - name: music
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/music
+        persistentVolumeClaim:
+          claimName: nfs-music
       - name: downloads
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -451,9 +437,8 @@ spec:
         persistentVolumeClaim:
           claimName: navidrome-data
       - name: music
-        nfs:
-          server: 192.168.1.114
-          path: /var/mnt/media/music
+        persistentVolumeClaim:
+          claimName: nfs-music
 ---
 apiVersion: apps/v1
 kind: Deployment
