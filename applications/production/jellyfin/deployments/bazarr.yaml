@@ -24,6 +24,8 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
+        - name: BAZARR_BASE_URL
+          value: "/bazarr"
         ports:
         - containerPort: 6767
           name: http

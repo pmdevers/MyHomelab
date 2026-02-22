@@ -28,6 +28,8 @@ spec:
           value: "*"
         - name: API_WHITELIST
           value: "0.0.0.0/0,::/0"
+        - name: URL_BASE
+          value: "/sabnzbd"
         ports:
         - containerPort: 8080
           name: http

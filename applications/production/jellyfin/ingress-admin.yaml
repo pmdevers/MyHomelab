@@ -1,0 +1,67 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: admin-apps
+  namespace: jellyfin
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  rules:
+    - host: admin.patrick-evers.nl
+      http:
+        paths:
+          - pathType: Prefix
+            path: /bazarr
+            backend:
+              service:
+                name: bazarr
+                port:
+                  number: 6767
+          - pathType: Prefix
+            path: /lidarr
+            backend:
+              service:
+                name: lidarr
+                port:
+                  number: 8686
+          - pathType: Prefix
+            path: /prowlarr
+            backend:
+              service:
+                name: prowlarr
+                port:
+                  number: 9696
+          - pathType: Prefix
+            path: /radarr
+            backend:
+              service:
+                name: radarr
+                port:
+                  number: 7878
+          - pathType: Prefix
+            path: /sonarr
+            backend:
+              service:
+                name: sonarr
+                port:
+                  number: 8989
+          - pathType: Prefix
+            path: /qbittorrent
+            backend:
+              service:
+                name: qbittorrent
+                port:
+                  number: 8082
+          - pathType: Prefix
+            path: /sabnzbd
+            backend:
+              service:
+                name: sabnzbd
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - admin.patrick-evers.nl
+      secretName: admin-patrick-evers-nl-tls

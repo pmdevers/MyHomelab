@@ -12,3 +12,18 @@ spec:
   selector:
     app: jellyfin
     app.kubernetes.io/part-of: jellyfin
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jellyfin-lb
+  namespace: jellyfin
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8096
+    targetPort: 8096
+    name: jellyfin
+  selector:
+    app: jellyfin
+    app.kubernetes.io/part-of: jellyfin

@@ -24,6 +24,8 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
+        - name: RADARR_BASE_URL
+          value: "/radarr"
         ports:
         - containerPort: 7878
           name: http

@@ -24,6 +24,8 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
+        - name: LIDARR_BASE_URL
+          value: "/lidarr"
         ports:
         - containerPort: 8686
           name: http

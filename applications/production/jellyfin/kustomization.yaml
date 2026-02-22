@@ -8,4 +8,5 @@ resources:
   - pvc.yaml
   - services/
   - ingress.yaml
+  - ingress-admin.yaml
   

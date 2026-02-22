@@ -24,6 +24,8 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
+        - name: SONARR_BASE_URL
+          value: "/sonarr"
         ports:
         - containerPort: 8989
           name: http

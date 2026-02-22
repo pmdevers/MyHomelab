@@ -24,6 +24,8 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
+        - name: PROWLARR_BASE_URL
+          value: "/prowlarr"
         ports:
         - containerPort: 9696
           name: http

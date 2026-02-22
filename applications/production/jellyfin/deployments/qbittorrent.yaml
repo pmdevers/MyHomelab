@@ -26,6 +26,8 @@ spec:
           value: "Europe/Amsterdam"
         - name: WEBUI_PORT
           value: "8082"
+        - name: WEBUI_URL_BASE
+          value: "/qbittorrent"
         ports:
         - containerPort: 8082
           name: webui
