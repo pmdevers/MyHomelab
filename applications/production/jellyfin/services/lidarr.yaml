@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lidarr
+  namespace: jellyfin
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8686
+      targetPort: 8686
+      name: http
+  selector:
+    app: lidarr
+    app.kubernetes.io/part-of: jellyfin
