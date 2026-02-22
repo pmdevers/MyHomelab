@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recyclarr
+  namespace: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: recyclarr
+  template:
+    metadata:
+      labels:
+        app: recyclarr
+        app.kubernetes.io/part-of: jellyfin
+    spec:
+      containers:
+      - name: recyclarr
+        image: ghcr.io/recyclarr/recyclarr:latest
+        env:
+        - name: TZ
+          value: "Europe/Amsterdam"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: recyclarr-config

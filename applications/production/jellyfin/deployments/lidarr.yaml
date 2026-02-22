@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lidarr
+  namespace: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lidarr
+  template:
+    metadata:
+      labels:
+        app: lidarr
+        app.kubernetes.io/part-of: jellyfin
+    spec:
+      containers:
+      - name: lidarr
+        image: lscr.io/linuxserver/lidarr:latest
+        env:
+        - name: PUID
+          value: "0"
+        - name: PGID
+          value: "0"
+        - name: TZ
+          value: "Europe/Amsterdam"
+        ports:
+        - containerPort: 8686
+          name: http
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: music
+          mountPath: /music
+        - name: downloads
+          mountPath: /downloads
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: lidarr-config
+      - name: music
+        persistentVolumeClaim:
+          claimName: nfs-music
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: nfs-downloads
