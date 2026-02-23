@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 #- gitopsdemo
 - patrick-evers
-- kafka-adventure
+#- kafka-adventure
 #- advisor-nest
 - adviseur-portaal
 - jellyfin
