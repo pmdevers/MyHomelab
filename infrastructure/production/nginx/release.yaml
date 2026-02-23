@@ -15,6 +15,10 @@ spec:
       version: "4.7.x"
   values:
     controller:
+      hostPort: 
+        enabled: false 
+      service: 
+        type: LoadBalancer
       ingressClassResource:
         default: true
         enabled: true
