@@ -76,7 +76,7 @@ machine:
 
 ```bash
 cilium install \
-  --set ipam.mode=kubernetes \
+  --set ipam.mode=cluster-pool \
   --set kubeProxyReplacement=true \
   --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
   --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
@@ -89,10 +89,11 @@ cilium install \
   --set gatewayAPI.enableAppProtocol=true \
   --set l2announcements.enabled=true \
   --set loadBalancer.enabled=true \
-  --set loadBalancer.ipam.mode=none \
   --set loadBalancer.mode=snat \
+  --set loadBalancer.ipam.mode=cluster-pool \
+  --set loadBalancer.clusterPoolIPv4CIDR="192.168.1.224/28" \
   --set hubble.enabled=true \
   --set hubble.relay.enabled=true \
   --set hubble.ui.enabled=true \
-  --set cluster.name=myhomelab \
+  --set cluster.name=myhomelab
 ```
