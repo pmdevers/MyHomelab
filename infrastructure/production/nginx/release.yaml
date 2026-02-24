@@ -15,11 +15,6 @@ spec:
       version: "4.14.x"
   values:
     controller:
-      hostPort: 
-        enabled: false 
-      service: 
-        type: LoadBalancer
-        loadBalancerIP: 192.168.1.230
       ingressClassResource:
         default: true
         enabled: true
@@ -28,9 +23,8 @@ spec:
         proxy-buffers: 4 "512k"
         proxy-buffer-size: "256k"
       replicaCount: 2
-      nodeSelector: {}
-      affinity: {}
-      tolerations: []
+    service:
+      externalTrafficPolicy: Local
   interval: 48h0m0s
   install:
     remediation:
