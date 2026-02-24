@@ -13,6 +13,9 @@ spec:
         name: metallb
         namespace: flux-system
       version: "0.15.x"
+  values:
+    speaker:
+      ignoreExcludeLB: true
   interval: 48h0m0s
   install:
     remediation:
