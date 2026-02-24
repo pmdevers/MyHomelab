@@ -18,9 +18,9 @@ def "main setup" [] {
     let token = (main get github)
     let environment = (main get environment)
 
-    if ($environment == "production") {
-        (main cloudflare (input "Cloudflare API Key: "))
-    }
+    #if ($environment == "production") {
+    #    (main cloudflare (input "Cloudflare API Key: "))
+    #}
 
     $env.GITHUB_TOKEN = $token
 
@@ -29,10 +29,10 @@ def "main setup" [] {
             --environment $environment
     )
 
-    (
-        main apply vault-secret
-            --environment $environment
-    )
+    # (
+    #     main apply vault-secret
+    #         --environment $environment
+    # )
 
     (
         main apply fluxcd
@@ -92,9 +92,17 @@ def "main add app" [
 def "main cloudflare" [
     api_key: string
 ] {
-    
+    let namespace = "cert-manager"
+    let exists = (kubectl get namespace $namespace | complete | get exit_code)
+    if $exists != 0 {
+        kubectl create namespace $namespace
+        print "Namespace '$namespace' created."
+    } else {
+        print "Namespace '$namespace' already exists."
+    }
+
     (
         kubectl create secret generic cloudflare-api-token-secret 
-            --from-literal=api-token=($api_key) --namespace cert-manager
+            --from-literal=api-token=($api_key) --namespace $namespace
     )
 }

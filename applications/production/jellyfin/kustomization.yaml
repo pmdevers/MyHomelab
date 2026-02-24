@@ -7,6 +7,6 @@ resources:
   - pv-nfs.yaml
   - pvc.yaml
   - services/
-  - ingress.yaml
-  - ingress-admin.yaml
+  #- ingress.yaml
+  #- ingress-admin.yaml
   
