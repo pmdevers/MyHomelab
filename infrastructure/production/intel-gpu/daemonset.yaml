@@ -26,10 +26,10 @@ spec:
           image: intel/intel-gpu-initcontainer:0.31.0
           imagePullPolicy: IfNotPresent
           securityContext:
-            readOnlyRootFilesystem: true
+            readOnlyRootFilesystem: false
           volumeMounts:
-            - name: nfd-features
-              mountPath: /etc/kubernetes/node-feature-discovery/features.d/
+            - name: nfd-source
+              mountPath: /etc/kubernetes/node-feature-discovery/source.d/
       containers:
         - name: intel-gpu-plugin
           image: intel/intel-gpu-plugin:0.31.0
@@ -60,7 +60,7 @@ spec:
         - name: kubeletsockets
           hostPath:
             path: /var/lib/kubelet/device-plugins
-        - name: nfd-features
+        - name: nfd-source
           hostPath:
-            path: /etc/kubernetes/node-feature-discovery/features.d/
+            path: /etc/kubernetes/node-feature-discovery/source.d/
             type: DirectoryOrCreate
