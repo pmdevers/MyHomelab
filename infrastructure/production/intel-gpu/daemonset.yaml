@@ -1,0 +1,66 @@
+---
+# Intel GPU Device Plugin DaemonSet
+# Exposes gpu.intel.com/i915 resource on nodes with Intel iGPU (e.g. i7-6700 HD 530)
+# Requires Talos intel-ucode + i915 extensions and node reboot to create /dev/dri
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: intel-gpu-plugin
+  namespace: kube-system
+  labels:
+    app: intel-gpu-plugin
+spec:
+  selector:
+    matchLabels:
+      app: intel-gpu-plugin
+  template:
+    metadata:
+      labels:
+        app: intel-gpu-plugin
+    spec:
+      priorityClassName: system-node-critical
+      tolerations:
+        - operator: Exists
+      initContainers:
+        - name: intel-gpu-initcontainer
+          image: intel/intel-gpu-initcontainer:0.31.0
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: nfd-features
+              mountPath: /etc/kubernetes/node-feature-discovery/features.d/
+      containers:
+        - name: intel-gpu-plugin
+          image: intel/intel-gpu-plugin:0.31.0
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - name: devfs
+              mountPath: /dev/dri
+              readOnly: true
+            - name: sysfs
+              mountPath: /sys/class/drm
+              readOnly: true
+            - name: kubeletsockets
+              mountPath: /var/lib/kubelet/device-plugins
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+      volumes:
+        - name: devfs
+          hostPath:
+            path: /dev/dri
+        - name: sysfs
+          hostPath:
+            path: /sys/class/drm
+        - name: kubeletsockets
+          hostPath:
+            path: /var/lib/kubelet/device-plugins
+        - name: nfd-features
+          hostPath:
+            path: /etc/kubernetes/node-feature-discovery/features.d/
+            type: DirectoryOrCreate

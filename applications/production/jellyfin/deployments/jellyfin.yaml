@@ -27,6 +27,11 @@ spec:
         ports:
         - containerPort: 8096
           name: http
+        resources:
+          limits:
+            gpu.intel.com/i915: 1
+        securityContext:
+          privileged: true
         volumeMounts:
         - name: config
           mountPath: /config
@@ -40,7 +45,12 @@ spec:
           mountPath: /music
         - name: downloads
           mountPath: /downloads
+        - name: dri
+          mountPath: /dev/dri
       volumes:
+      - name: dri
+        hostPath:
+          path: /dev/dri
       - name: config
         persistentVolumeClaim:
           claimName: jellyfin-config

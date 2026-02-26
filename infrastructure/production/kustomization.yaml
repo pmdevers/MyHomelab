@@ -13,3 +13,4 @@ resources:
 #- onepassword-connect
 #- redpanda
 - cilium
+- intel-gpu
