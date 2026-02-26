@@ -6,5 +6,6 @@ resources:
   - deployments
   - services
   - httproute.yaml
+  - ingress-admin.yaml
   - pv-nfs.yaml
   - pvc.yaml

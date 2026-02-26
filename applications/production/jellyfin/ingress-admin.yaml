@@ -1,67 +1,62 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
 metadata:
   name: admin-apps
   namespace: jellyfin
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-    cert-manager.io/cluster-issuer: letsencrypt
 spec:
+  parentRefs:
+    - name: homelab-gateway
+      namespace: gateway
+      sectionName: https
+  hostnames:
+    - admin.patrick-evers.nl
   rules:
-    - host: admin.patrick-evers.nl
-      http:
-        paths:
-          - pathType: Prefix
-            path: /bazarr
-            backend:
-              service:
-                name: bazarr
-                port:
-                  number: 6767
-          - pathType: Prefix
-            path: /lidarr
-            backend:
-              service:
-                name: lidarr
-                port:
-                  number: 8686
-          - pathType: Prefix
-            path: /prowlarr
-            backend:
-              service:
-                name: prowlarr
-                port:
-                  number: 9696
-          - pathType: Prefix
-            path: /radarr
-            backend:
-              service:
-                name: radarr
-                port:
-                  number: 7878
-          - pathType: Prefix
-            path: /sonarr
-            backend:
-              service:
-                name: sonarr
-                port:
-                  number: 8989
-          - pathType: Prefix
-            path: /qbittorrent
-            backend:
-              service:
-                name: qbittorrent
-                port:
-                  number: 8082
-          - pathType: Prefix
-            path: /sabnzbd
-            backend:
-              service:
-                name: sabnzbd
-                port:
-                  number: 8080
-  tls:
-    - hosts:
-        - admin.patrick-evers.nl
-      secretName: admin-patrick-evers-nl-tls
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /bazarr
+      backendRefs:
+        - name: bazarr
+          port: 6767
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /lidarr
+      backendRefs:
+        - name: lidarr
+          port: 8686
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /prowlarr
+      backendRefs:
+        - name: prowlarr
+          port: 9696
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /radarr
+      backendRefs:
+        - name: radarr
+          port: 7878
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /sonarr
+      backendRefs:
+        - name: sonarr
+          port: 8989
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /qbittorrent
+      backendRefs:
+        - name: qbittorrent
+          port: 8082
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /sabnzbd
+      backendRefs:
+        - name: sabnzbd
+          port: 8080
