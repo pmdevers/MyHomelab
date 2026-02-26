@@ -8,7 +8,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 192.168.1.114
+    server: 172.20.10.2
     path: /volume1/config/jellyfin
   mountOptions:
     - nfsvers=3
@@ -38,7 +38,7 @@ spec:
   accessModes:
     - ReadWriteMany
   nfs:
-    server: 192.168.1.114
+    server: 172.20.10.2
     path: /volume1/cache/jellyfin
   mountOptions:
     - nfsvers=3

@@ -17,7 +17,7 @@ spec:
     storageClass:
       defaultClass: true
     nfs:
-      server: 192.168.1.114
+      server: 172.20.10.2
       path: /volume1/k8s
       mountOptions: "nfsvers=3"
   interval: 48h0m0s
