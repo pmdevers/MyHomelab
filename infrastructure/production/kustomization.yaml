@@ -12,3 +12,4 @@ resources:
 #- external-secrets
 #- onepassword-connect
 #- redpanda
+- cilium

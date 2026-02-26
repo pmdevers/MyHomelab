@@ -60,7 +60,7 @@ platform destroy kubernetes
 # Talos Omni Cluster Patches
 
 This allows scheduling on ControlPlanes
-In order for MetalLB to work we need to remove the label `node.kubernetes.io/exclude-from-external-load-balancers`
+In order for Cilium to work we need to remove the label `node.kubernetes.io/exclude-from-external-load-balancers`
 
 ```yaml
 cluster:
@@ -71,29 +71,54 @@ machine:
       $patch: delete
 ```
 
+## Install Gateway API
+
+kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.4.1/standard-install.yaml
 
 ## Install Cilium
 
+Cluster Patch
+
+```yaml
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true
+```
+
 ```bash
 cilium install \
-  --set ipam.mode=cluster-pool \
-  --set kubeProxyReplacement=true \
-  --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
-  --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
-  --set cgroup.autoMount.enabled=false \
-  --set cgroup.hostRoot=/sys/fs/cgroup \
-  --set k8sServiceHost=localhost \
-  --set k8sServicePort=7445 \
-  --set gatewayAPI.enabled=true \
-  --set gatewayAPI.enableAlpn=true \
-  --set gatewayAPI.enableAppProtocol=true \
-  --set l2announcements.enabled=true \
-  --set loadBalancer.enabled=true \
-  --set loadBalancer.mode=snat \
-  --set loadBalancer.ipam.mode=cluster-pool \
-  --set loadBalancer.clusterPoolIPv4CIDR="192.168.1.224/28" \
-  --set hubble.enabled=true \
-  --set hubble.relay.enabled=true \
-  --set hubble.ui.enabled=true \
-  --set cluster.name=myhomelab
+    --version 1.19.1 \
+    --set ipam.mode=kubernetes \
+    --set kubeProxyReplacement=true \
+    --set securityContext.capabilities.ciliumAgent="{CHOWN,KILL,NET_ADMIN,NET_RAW,IPC_LOCK,SYS_ADMIN,SYS_RESOURCE,DAC_OVERRIDE,FOWNER,SETGID,SETUID}" \
+    --set securityContext.capabilities.cleanCiliumState="{NET_ADMIN,SYS_ADMIN,SYS_RESOURCE}" \
+    --set cgroup.autoMount.enabled=false \
+    --set cgroup.hostRoot=/sys/fs/cgroup \
+    --set k8sServiceHost=localhost \
+    --set k8sServicePort=7445 \
+    --set bgpControlPlane.enabled=true \
+\
+    --set gatewayAPI.enabled=true \
+    --set gatewayAPI.enableAlpn=true \
+    --set gatewayAPI.enableAppProtocol=true \
+\
+    --set hubble.enabled=true \
+    --set hubble.relay.enabled=true \
+    --set hubble.ui.enabled=true \
+
+
+```
+
+services need to be annotated with
+
+```yaml
+
+labels:
+    bgp.cilium.io/ip-pool: default
+    bgp.cilium.io/advertise-service: default
+  annotations:
+    io.cilium/lb-ipam-ips: "172.20.10.192"
 ```

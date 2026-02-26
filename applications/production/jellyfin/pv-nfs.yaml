@@ -11,7 +11,7 @@ spec:
     server: 192.168.1.114
     path: /volume1/media/movies
   mountOptions:
-    - nfsvers=4.1
+    - nfsvers=3
     - hard
 ---
 apiVersion: v1
@@ -27,7 +27,7 @@ spec:
     server: 192.168.1.114
     path: /volume1/media/tv
   mountOptions:
-    - nfsvers=4.1
+    - nfsvers=3
     - hard
 ---
 apiVersion: v1
@@ -43,7 +43,7 @@ spec:
     server: 192.168.1.114
     path: /volume1/media/music
   mountOptions:
-    - nfsvers=4.1
+    - nfsvers=3
     - hard
 ---
 apiVersion: v1
@@ -59,7 +59,7 @@ spec:
     server: 192.168.1.114
     path: /volume1/downloads
   mountOptions:
-    - nfsvers=4.1
+    - nfsvers=3
     - hard
 ---
 apiVersion: v1

@@ -1,0 +1,10 @@
+---
+# IP pool advertised via BGP to the Ubiquiti router.
+# 172.20.10.200 – 172.20.10.215  (14 usable LB addresses)
+apiVersion: cilium.io/v2
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: homelab-lb-pool
+spec:
+  blocks:
+    - cidr: "172.20.10.200/28"

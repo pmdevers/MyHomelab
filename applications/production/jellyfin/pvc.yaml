@@ -11,7 +11,7 @@ spec:
     server: 192.168.1.114
     path: /volume1/config/jellyfin
   mountOptions:
-    - nfsvers=4.1
+    - nfsvers=3
     - hard
 ---
 apiVersion: v1
@@ -41,7 +41,7 @@ spec:
     server: 192.168.1.114
     path: /volume1/cache/jellyfin
   mountOptions:
-    - nfsvers=4.1
+    - nfsvers=3
     - hard
 ---
 apiVersion: v1

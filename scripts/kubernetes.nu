@@ -39,3 +39,23 @@ def --env "main destroy kubernetes" [
         kind delete cluster
     }	
 }
+
+# Apply all Talos Omni machine config patches from talos/
+def "main apply talos" [] {
+    print "Applying cluster-wide patches..."
+    omnictl apply -f talos/patches/cluster-wide.yaml
+    omnictl apply -f talos/patches/control-planes.yaml
+
+    print "Applying per-node network patches..."
+    ls talos/nodes/*.yaml | each {|f|
+        print $"  -> ($f.name)"
+        omnictl apply -f $f.name
+    }
+
+    print "Done. Verify with: omnictl get machineconfigs"
+}
+
+# Show current Omni machine config patches for the cluster
+def "main get talos" [] {
+    omnictl get machineconfigs --selector omni.sidero.dev/cluster=MyHomeLab
+}

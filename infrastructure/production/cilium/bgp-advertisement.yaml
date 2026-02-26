@@ -1,0 +1,18 @@
+---
+# What routes Cilium will advertise over BGP.
+# Advertises all LoadBalancer Service IPs assigned from the lb-pool.
+apiVersion: cilium.io/v2
+kind: CiliumBGPAdvertisement
+metadata:
+  name: homelab-bgp-advertisement
+  labels:
+    bgp.cilium.io/advertise: loadbalancer-services
+spec:
+  advertisements:
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchLabels:
+          bgp.cilium.io/advertise-service: default
