@@ -50,6 +50,12 @@ spec:
         - path:
             type: PathPrefix
             value: /qbittorrent
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: qbittorrent
           port: 8082
