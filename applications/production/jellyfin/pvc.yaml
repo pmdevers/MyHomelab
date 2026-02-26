@@ -1,14 +1,48 @@
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-config
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.1.114
+    path: /volume1/config/jellyfin
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: jellyfin-config
   namespace: jellyfin
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: jellyfin-config
   resources:
     requests:
-      storage: 10Gi
+      storage: 1Ti
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-cache
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 192.168.1.114
+    path: /volume1/cache/jellyfin
+  mountOptions:
+    - nfsvers=4.1
+    - hard
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -17,7 +51,9 @@ metadata:
   namespace: jellyfin
 spec:
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: jellyfin-cache
   resources:
     requests:
       storage: 10Gi
