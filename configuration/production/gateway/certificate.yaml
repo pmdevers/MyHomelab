@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: wildcard-patrick-evers-nl-tls
+  namespace: gateway
+spec:
+  secretName: wildcard-patrick-evers-nl-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  dnsNames:
+    - "patrick-evers.nl"
+    - "*.patrick-evers.nl"
