@@ -1,12 +1,9 @@
+context: pmdevers-MyHomeLab
 contexts:
-    default:
-        url: https://pmdevers.na-west-1.omni.siderolabs.io
+    pmdevers-MyHomeLab:
+        endpoints:
+            - https://pmdevers.na-west-1.omni.siderolabs.io
         auth:
             siderov1:
                 identity: pmdevers@gmail.com
-    default-1:
-        url: https://pmdevers.na-west-1.omni.siderolabs.io
-        auth:
-            siderov1:
-                identity: pmdevers@gmail.com
-context: default-1
+        cluster: MyHomeLab
