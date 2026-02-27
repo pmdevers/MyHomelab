@@ -16,19 +16,6 @@ spec:
     spec:
       nodeSelector:
         kubernetes.io/hostname: k8s-node-2
-      initContainers:
-      - name: migrate-db
-        image: busybox:latest
-        command:
-        - sh
-        - -c
-        - |
-          echo "Clearing local data dir for a fresh start..."
-          rm -rf /data/*
-          echo "Done."
-        volumeMounts:
-        - name: data
-          mountPath: /data
       containers:
       - name: jellyfin
         image: jellyfin/jellyfin:latest
