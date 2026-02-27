@@ -5,10 +5,8 @@ resources:
 - sources
 - cert-manager
 #- oauth2-proxy
-#- postgress
 - nfs-provisioner
-#- external-secrets
+- external-secrets
 #- onepassword-connect
-#- redpanda
 - cilium
 - intel-gpu
