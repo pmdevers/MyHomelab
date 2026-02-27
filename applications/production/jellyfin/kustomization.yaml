@@ -3,6 +3,9 @@ kind: Kustomization
 namespace: jellyfin
 resources:
   - namespace.yaml
+  - configmap.yaml
+  - configmap-postgres.yaml
+  - externalsecret.yaml
   - deployments
   - services
   - httproute.yaml

@@ -14,9 +14,27 @@ spec:
         app: jellyfin
         app.kubernetes.io/part-of: jellyfin
     spec:
+      initContainers:
+      - name: setup-postgres-provider
+        image: busybox:1.37
+        command:
+        - sh
+        - /scripts/setup-database.sh
+        env:
+        - name: POSTGRES_CONNECTION_STRING
+          valueFrom:
+            secretKeyRef:
+              name: jellyfin-db-credentials
+              key: CONNECTION_STRING
+        volumeMounts:
+        - name: config
+          mountPath: /config
+          subPath: jellyfin
+        - name: postgres-setup-script
+          mountPath: /scripts
       containers:
       - name: jellyfin
-        image: jellyfin/jellyfin:latest
+        image: jellyfin/jellyfin:10.11.3
         env:
         - name: PUID
           value: "0"
@@ -30,11 +48,11 @@ spec:
         resources:
           requests:
             cpu: 1000m
-            memory: 2Gi
+            memory: 3Gi
             gpu.intel.com/i915: 1
           limits:
             cpu: 4000m
-            memory: 4Gi
+            memory: 6Gi
             gpu.intel.com/i915: 1
         volumeMounts:
         - name: config
@@ -51,6 +69,10 @@ spec:
         - name: downloads
           mountPath: /downloads
       volumes:
+      - name: postgres-setup-script
+        configMap:
+          name: jellyfin-postgres-setup
+          defaultMode: 0755
       - name: config
         persistentVolumeClaim:
           claimName: nfs-config

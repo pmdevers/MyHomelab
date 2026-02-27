@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jellyfin-postgres-setup
+  namespace: jellyfin
+data:
+  setup-database.sh: |
+    #!/bin/sh
+    set -e
+    
+    echo "Setting up PostgreSQL database provider..."
+    
+    # Create database.json configuration with connection string from secret
+    mkdir -p /config/data
+    cat > /config/data/database.json <<EOF
+    {
+      "DatabaseType": "PLUGIN_PROVIDER",
+      "CustomProviderOptions": {
+        "PluginName": "postgres-database-provider",
+        "PluginAssembly": "Jellyfin.Plugin.Postgres",
+        "ConnectionString": "${POSTGRES_CONNECTION_STRING}",
+        "Options": [
+          { "Key": "default-schema", "Value": "public" },
+          { "Key": "command-timeout", "Value": "60" },
+          { "Key": "enable-retry-on-failure", "Value": "true" },
+          { "Key": "retry-count", "Value": "5" },
+          { "Key": "retry-delay-seconds", "Value": "15" },
+          { "Key": "builder:SearchPath", "Value": "public" }
+        ]
+      },
+      "LockingBehavior": "NoLock"
+    }
+    EOF
+    
+    # Download and extract PostgreSQL provider plugin
+    mkdir -p /config/plugins
+    PLUGIN_DIR="/config/plugins/postgres-database-provider"
+    
+    # Remove old plugin if exists
+    rm -rf "$PLUGIN_DIR"
+    mkdir -p "$PLUGIN_DIR"
+    
+    echo "Downloading PostgreSQL provider plugin..."
+    cd "$PLUGIN_DIR"
+    wget -q -O postgres-provider.zip \
+      https://github.com/0xBADBAC0N/jellyfin-plugin-psql/releases/download/v0.2.0/postgres-database-provider.zip
+    
+    echo "Extracting plugin..."
+    unzip -q postgres-provider.zip
+    rm postgres-provider.zip
+    
+    echo "PostgreSQL provider setup complete"
+    echo "Plugin files:"
+    ls -la "$PLUGIN_DIR"
+    echo ""
+    echo "Database config:"
+    cat /config/data/database.json
