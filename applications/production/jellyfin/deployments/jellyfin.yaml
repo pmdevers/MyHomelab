@@ -70,7 +70,7 @@ spec:
           sizeLimit: 10Gi
       - name: cache
         hostPath:
-          path: /mnt/jellyfin-cache
+          path: /var/lib/jellyfin-cache
           type: DirectoryOrCreate
       - name: movies
         persistentVolumeClaim:
