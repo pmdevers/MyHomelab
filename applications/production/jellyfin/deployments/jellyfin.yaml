@@ -24,6 +24,8 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
+        - name: JELLYFIN_PublishedServerUrl
+          value: "https://jellyfin.patrick-evers.nl"
         ports:
         - containerPort: 8096
           name: http
