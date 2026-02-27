@@ -14,6 +14,30 @@ spec:
         app: jellyfin
         app.kubernetes.io/part-of: jellyfin
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node-2
+      initContainers:
+      - name: migrate-db
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          if [ ! -f /data/jellyfin.db ]; then
+            echo "Migrating Jellyfin data from NFS to local storage..."
+            cp -r /nfs-data/. /data/
+            echo "Removing corrupted WAL/SHM files..."
+            find /data -name "*.db-wal" -o -name "*.db-shm" | xargs rm -f
+            echo "Migration complete."
+          else
+            echo "Local data already exists, skipping migration."
+          fi
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /nfs-data
+          subPath: jellyfin/data
       containers:
       - name: jellyfin
         image: jellyfin/jellyfin:latest
@@ -24,6 +48,8 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
+        - name: JELLYFIN_DATA_DIR
+          value: /data
         ports:
         - containerPort: 8096
           name: http
@@ -37,6 +63,8 @@ spec:
         - name: config
           mountPath: /config
           subPath: jellyfin
+        - name: data
+          mountPath: /data
         - name: cache
           mountPath: /cache
         - name: movies
@@ -51,6 +79,10 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: nfs-config
+      - name: data
+        hostPath:
+          path: /var/local/jellyfin/data
+          type: DirectoryOrCreate
       - name: cache
         emptyDir: {}
       - name: movies
