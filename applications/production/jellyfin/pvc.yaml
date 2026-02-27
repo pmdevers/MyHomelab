@@ -27,33 +27,4 @@ spec:
   resources:
     requests:
       storage: 1Ti
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: jellyfin-cache
-spec:
-  capacity:
-    storage: 10Gi
-  accessModes:
-    - ReadWriteMany
-  nfs:
-    server: 172.20.10.2
-    path: /volume1/cache/jellyfin
-  mountOptions:
-    - nfsvers=4.1
-    - hard
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: jellyfin-cache
-  namespace: jellyfin
-spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: ""
-  volumeName: jellyfin-cache
-  resources:
-    requests:
-      storage: 10Gi
+

@@ -30,6 +30,9 @@ spec:
         resources:
           limits:
             gpu.intel.com/i915: 1
+            ephemeral-storage: 20Gi
+          requests:
+            ephemeral-storage: 10Gi
         volumeMounts:
         - name: config
           mountPath: /config
@@ -49,8 +52,7 @@ spec:
         persistentVolumeClaim:
           claimName: nfs-config
       - name: cache
-        persistentVolumeClaim:
-          claimName: jellyfin-cache
+        emptyDir: {}
       - name: movies
         persistentVolumeClaim:
           claimName: nfs-movies
