@@ -49,6 +49,19 @@ data:
     unzip -q postgres-provider.zip
     rm postgres-provider.zip
     
+    # Fix nested directory structure - move files up one level if needed
+    if [ -d "postgres-database-provider" ]; then
+      echo "Fixing nested directory structure..."
+      mv postgres-database-provider/* .
+      rmdir postgres-database-provider
+    fi
+    
+    # Remove corrupted SQLite database to force PostgreSQL usage
+    echo "Removing old SQLite database files..."
+    rm -f /config/data/jellyfin.db
+    rm -f /config/data/jellyfin.db-shm
+    rm -f /config/data/jellyfin.db-wal
+    
     echo "PostgreSQL provider setup complete"
     echo "Plugin files:"
     ls -la "$PLUGIN_DIR"
