@@ -32,6 +32,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: lidarr
         - name: music
           mountPath: /music
         - name: downloads
@@ -39,7 +40,7 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: lidarr-config
+          claimName: nfs-config
       - name: music
         persistentVolumeClaim:
           claimName: nfs-music

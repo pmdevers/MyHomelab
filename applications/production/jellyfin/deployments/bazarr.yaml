@@ -32,6 +32,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: bazarr
         - name: movies
           mountPath: /movies
         - name: tv
@@ -39,7 +40,7 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: bazarr-config
+          claimName: nfs-config
       - name: movies
         persistentVolumeClaim:
           claimName: nfs-movies

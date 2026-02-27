@@ -33,6 +33,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: jellyfin
         - name: cache
           mountPath: /cache
         - name: movies
@@ -46,7 +47,7 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: jellyfin-config
+          claimName: nfs-config
       - name: cache
         persistentVolumeClaim:
           claimName: jellyfin-cache

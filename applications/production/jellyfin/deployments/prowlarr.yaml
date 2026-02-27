@@ -32,7 +32,8 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: prowlarr
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: prowlarr-config
+          claimName: nfs-config

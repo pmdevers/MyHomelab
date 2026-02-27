@@ -36,12 +36,13 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: sabnzbd
         - name: downloads
           mountPath: /downloads
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: sabnzbd-config
+          claimName: nfs-config
       - name: downloads
         persistentVolumeClaim:
           claimName: nfs-downloads

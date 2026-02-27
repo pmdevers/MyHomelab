@@ -32,6 +32,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: sonarr
         - name: tv
           mountPath: /tv
         - name: downloads
@@ -39,7 +40,7 @@ spec:
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: sonarr-config
+          claimName: nfs-config
       - name: tv
         persistentVolumeClaim:
           claimName: nfs-tv

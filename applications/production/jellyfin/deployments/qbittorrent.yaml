@@ -38,12 +38,13 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: qbittorrent
         - name: downloads
           mountPath: /downloads
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: qbittorrent-config
+          claimName: nfs-config
       - name: downloads
         persistentVolumeClaim:
           claimName: nfs-downloads

@@ -23,7 +23,8 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config
+          subPath: recyclarr
       volumes:
       - name: config
         persistentVolumeClaim:
-          claimName: recyclarr-config
+          claimName: nfs-config
