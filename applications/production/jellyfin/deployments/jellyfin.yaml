@@ -69,8 +69,9 @@ spec:
         emptyDir:
           sizeLimit: 10Gi
       - name: cache
-        emptyDir:
-          sizeLimit: 50Gi
+        hostPath:
+          path: /mnt/jellyfin-cache
+          type: DirectoryOrCreate
       - name: movies
         persistentVolumeClaim:
           claimName: nfs-movies
