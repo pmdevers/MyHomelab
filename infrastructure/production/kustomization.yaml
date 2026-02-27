@@ -10,4 +10,5 @@ resources:
 #- onepassword-connect
 - cilium
 - intel-gpu
+- metrics-server
 - s3-csi-driver
