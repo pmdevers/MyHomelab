@@ -23,14 +23,22 @@ spec:
         - sh
         - -c
         - |
-          if [ ! -f /data/jellyfin.db ]; then
-            echo "Migrating Jellyfin data from NFS to local storage..."
+          if [ ! -d /data ] || [ -z "$(ls -A /data 2>/dev/null)" ]; then
+            echo "Migrating Jellyfin config from NFS to local storage..."
             cp -r /nfs-data/. /data/
-            echo "Removing corrupted WAL/SHM files..."
-            find /data -name "*.db-wal" -o -name "*.db-shm" | xargs rm -f
-            echo "Migration complete."
-          else
-            echo "Local data already exists, skipping migration."
+          fi
+          echo "Removing WAL/SHM files..."
+          find /data -name "*.db-wal" -delete
+          find /data -name "*.db-shm" -delete
+          if [ -f /data/jellyfin.db ]; then
+            # Check SQLite magic header: first 6 bytes must be "SQLite"
+            magic=$(head -c 6 /data/jellyfin.db 2>/dev/null)
+            if [ "$magic" != "SQLite" ]; then
+              echo "jellyfin.db is corrupted, removing for fresh start..."
+              find /data -name "*.db" -delete
+            else
+              echo "Database looks healthy, keeping it."
+            fi
           fi
         volumeMounts:
         - name: data
