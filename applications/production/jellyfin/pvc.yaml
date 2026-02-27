@@ -11,7 +11,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/jellyfin
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -41,7 +41,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/cache/jellyfin
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -71,7 +71,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/prowlarr
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -101,7 +101,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/radarr
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -131,7 +131,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/sonarr
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -161,7 +161,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/sabnzbd
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -191,7 +191,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/qbittorrent
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -221,7 +221,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/bazarr
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -251,7 +251,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/recyclarr
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -281,7 +281,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/config/lidarr
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1

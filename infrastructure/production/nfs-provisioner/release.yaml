@@ -20,7 +20,7 @@ spec:
       server: 172.20.10.2
       path: /volume1/k8s
       mountOptions:
-        - nfsvers=3
+        - nfsvers=4.1
   interval: 48h0m0s
   install:
     remediation:
