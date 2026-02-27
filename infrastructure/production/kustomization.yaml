@@ -10,3 +10,4 @@ resources:
 #- onepassword-connect
 - cilium
 - intel-gpu
+- s3-csi-driver

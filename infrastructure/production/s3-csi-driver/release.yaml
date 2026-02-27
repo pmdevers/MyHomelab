@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: aws-mountpoint-s3-csi-driver
+  namespace: s3-csi-driver
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: aws-mountpoint-s3-csi-driver
+      version: "1.x"
+      sourceRef:
+        kind: HelmRepository
+        name: aws-mountpoint-s3-csi-driver
+        namespace: flux-system
+      interval: 12h
+  values:
+    node:
+      kubeletPath: /var/lib/kubelet
+    storageClass:
+      create: true
+      name: s3-csi
+      parameters:
+        # S3 bucket configuration
+        # bucketName: your-bucket-name
+        # region: us-east-1
+        # or for S3-compatible storage (MinIO, etc):
+        # endpoint: https://s3.example.com
+        mountOptions:
+          - allow-delete
+          - allow-other
+          - region=us-east-1
