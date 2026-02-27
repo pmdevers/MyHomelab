@@ -56,7 +56,7 @@ spec:
           claimName: nfs-config
       - name: cache
         emptyDir:
-          sizeLimit: 10Gi
+          sizeLimit: 50Gi
       - name: movies
         persistentVolumeClaim:
           claimName: nfs-movies
