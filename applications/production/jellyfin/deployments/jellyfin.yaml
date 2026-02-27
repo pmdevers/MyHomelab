@@ -48,8 +48,6 @@ spec:
           mountPath: /tv
         - name: music
           mountPath: /music
-        - name: downloads
-          mountPath: /downloads
       volumes:
       - name: config
         persistentVolumeClaim:
@@ -66,6 +64,3 @@ spec:
       - name: music
         persistentVolumeClaim:
           claimName: nfs-music
-      - name: downloads
-        persistentVolumeClaim:
-          claimName: nfs-downloads
