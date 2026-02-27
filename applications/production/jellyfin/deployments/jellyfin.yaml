@@ -14,8 +14,6 @@ spec:
         app: jellyfin
         app.kubernetes.io/part-of: jellyfin
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: k8s-node-2
       containers:
       - name: jellyfin
         image: jellyfin/jellyfin:latest
@@ -26,23 +24,16 @@ spec:
           value: "0"
         - name: TZ
           value: "Europe/Amsterdam"
-        - name: JELLYFIN_DATA_DIR
-          value: /data
         ports:
         - containerPort: 8096
           name: http
         resources:
           limits:
             gpu.intel.com/i915: 1
-            ephemeral-storage: 20Gi
-          requests:
-            ephemeral-storage: 10Gi
         volumeMounts:
         - name: config
           mountPath: /config
           subPath: jellyfin
-        - name: data
-          mountPath: /data
         - name: cache
           mountPath: /cache
         - name: movies
@@ -57,10 +48,6 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: nfs-config
-      - name: data
-        hostPath:
-          path: /var/local/jellyfin/data
-          type: DirectoryOrCreate
       - name: cache
         emptyDir: {}
       - name: movies
