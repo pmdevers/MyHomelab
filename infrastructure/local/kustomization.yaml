@@ -5,15 +5,7 @@ resources:
 - ../production
 
 patches:
-- target:
-    kind: HelmRelease
-    name: metallb
-  path: patches/metallb.yaml
 - path: patches/postgress.yaml
   target:
     kind: HelmRelease
     name: postgresql
-- path: patches/ingress.yaml
-  target:
-    kind: HelmRelease
-    name: ingress-nginx

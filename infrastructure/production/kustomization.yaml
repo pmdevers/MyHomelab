@@ -3,10 +3,8 @@ kind: Kustomization
 
 resources:
 - sources
-#- metallb
 - cert-manager
 #- oauth2-proxy
-#- nginx
 #- postgress
 - nfs-provisioner
 #- external-secrets
