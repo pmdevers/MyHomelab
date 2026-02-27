@@ -11,7 +11,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/media/movies
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -27,7 +27,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/media/tv
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -43,7 +43,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/media/music
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
@@ -59,7 +59,7 @@ spec:
     server: 172.20.10.2
     path: /volume1/downloads
   mountOptions:
-    - nfsvers=3
+    - nfsvers=4.1
     - hard
 ---
 apiVersion: v1
