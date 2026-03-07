@@ -8,6 +8,9 @@ metadata:
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
   gatewayClassName: cilium
+  addresses:
+    - type: IPAddress
+      value: "172.20.10.194"
   listeners:
     - name: http
       protocol: HTTP

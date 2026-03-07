@@ -4,6 +4,10 @@ machine:
   nodeLabels:
     node.kubernetes.io/exclude-from-external-load-balancers:
       $patch: delete
+  network:
+    nameservers:
+      - 192.168.1.1
+      - 1.1.1.1
   install:
     extensions:
       - image: ghcr.io/siderolabs/nfs-utils:2.6.4
