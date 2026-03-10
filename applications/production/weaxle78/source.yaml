@@ -17,4 +17,4 @@ spec:
   images:
     - name: ghcr.io/pmdevers/weaxle78
       newName: ghcr.io/pmdevers/weaxle78 # {"$imagepolicy": "flux-system:weaxle78:name"}
-      newTag: main-430b97b-1772152825 # {"$imagepolicy": "flux-system:weaxle78:tag"}
+      newTag: main-ce04516-1773157630 # {"$imagepolicy": "flux-system:weaxle78:tag"}
