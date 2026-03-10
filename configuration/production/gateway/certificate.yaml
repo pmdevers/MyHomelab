@@ -11,3 +11,7 @@ spec:
   dnsNames:
     - "patrick-evers.nl"
     - "*.patrick-evers.nl"
+    - "weaxle78.com"
+    - "*.weaxle78.com"
+    - "weaxle78.nl"
+    - "*.weaxle78.nl"

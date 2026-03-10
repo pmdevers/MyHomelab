@@ -30,3 +30,51 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: https-weaxle78-com
+      protocol: HTTPS
+      port: 443
+      hostname: "weaxle78.com"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-patrick-evers-nl-tls
+            namespace: gateway
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-weaxle78-com-wildcard
+      protocol: HTTPS
+      port: 443
+      hostname: "*.weaxle78.com"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-patrick-evers-nl-tls
+            namespace: gateway
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-weaxle78-nl
+      protocol: HTTPS
+      port: 443
+      hostname: "weaxle78.nl"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-patrick-evers-nl-tls
+            namespace: gateway
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-weaxle78-nl-wildcard
+      protocol: HTTPS
+      port: 443
+      hostname: "*.weaxle78.nl"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: wildcard-patrick-evers-nl-tls
+            namespace: gateway
+      allowedRoutes:
+        namespaces:
+          from: All
