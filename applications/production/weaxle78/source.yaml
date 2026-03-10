@@ -1,0 +1,20 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: weaxle78
+  namespace: flux-system
+spec:
+  interval: 10m0s
+  dependsOn:
+    - name: infrastructure
+  sourceRef:
+    kind: GitRepository
+    name: weaxle78
+  path: ./deploy/production
+  prune: true
+  wait: true
+  timeout: 5m0s
+  images:
+    - name: ghcr.io/pmdevers/weaxle78
+      newName: ghcr.io/pmdevers/weaxle78 # {"$imagepolicy": "flux-system:weaxle78:name"}
+      newTag: main-430b97b-1772152825 # {"$imagepolicy": "flux-system:weaxle78:tag"}

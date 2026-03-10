@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
 #- gitopsdemo
 - patrick-evers
+- weaxle78
 #- kafka-adventure
 #- advisor-nest
 #- adviseur-portaal
