@@ -13,7 +13,8 @@
     "omnictl@latest",
     "talosctl@latest",
     "kubelogin-oidc@latest",
-    "_1password@latest"
+    "_1password@latest",
+    "vault@1.15.4"
   ],
   "shell": {
     "init_hook": [
@@ -23,6 +24,7 @@
       "export KUBECONFIG=$PWD/kubeconfig.yaml",
       "export TALOSCONFIG=$PWD/talosconfig.yaml",
       "export OMNICONFIG=$PWD/omniconfig.yaml",
+      "export VAULT_ADDR=http://172.20.10.2:8200",
       "eval \"$(starship init bash)\"",
       "clear"
     ],

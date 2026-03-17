@@ -8,3 +8,4 @@ resources:
 #- advisor-nest
 #- adviseur-portaal
 - jellyfin
+- n8n
