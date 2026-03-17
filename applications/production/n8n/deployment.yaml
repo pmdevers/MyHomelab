@@ -25,6 +25,10 @@ spec:
               value: "production"
             - name: N8N_SECURE_COOKIE
               value: "false"
+            - name: N8N_CORS_ALLOW_ORIGIN
+              value: https://n8n.patrick-evers.nl
+            - name: N8N_CORS_ALLOW_CREDENTIALS
+              value: "true"
           volumeMounts:
             - name: n8n-data
               mountPath: /home/node/.n8n
