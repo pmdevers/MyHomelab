@@ -29,6 +29,16 @@ spec:
               value: https://n8n.patrick-evers.nl
             - name: N8N_CORS_ALLOW_CREDENTIALS
               value: "true"
+            - name: N8N_HOST
+              value: n8n.patrick-evers.nl
+            - name: N8N_PROTOCOL
+              value: https
+            - name: N8N_PORT
+              value: 5678
+            - name: WEBHOOK_URL
+              value: https://n8n.patrick-evers.nl/
+            - name: N8N_EDITOR_BASE_URL
+              value: https://n8n.patrick-evers.nl/
           volumeMounts:
             - name: n8n-data
               mountPath: /home/node/.n8n
