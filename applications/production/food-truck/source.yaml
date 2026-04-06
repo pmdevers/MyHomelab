@@ -17,4 +17,4 @@ spec:
   images:
     - name: ghcr.io/pmdevers/food-truck
       newName: ghcr.io/pmdevers/food-truck # {"$imagepolicy": "flux-system:food-truck:name"}
-      newTag: main-d1a5623-1775483025 # {"$imagepolicy": "flux-system:food-truck:tag"}
+      newTag: main-eb61815-1775484526 # {"$imagepolicy": "flux-system:food-truck:tag"}
