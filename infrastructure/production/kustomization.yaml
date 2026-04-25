@@ -9,6 +9,7 @@ resources:
 - external-secrets
 #- onepassword-connect
 - cilium
+- amd-gpu-operator
 - intel-gpu
 - metrics-server
 - s3-csi-driver

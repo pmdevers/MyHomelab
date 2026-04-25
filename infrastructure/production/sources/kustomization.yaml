@@ -10,3 +10,4 @@ resources:
   - redpanda.yaml
   - oauth2-proxy.yaml
   - onepassword.yaml
+  - rocm.yaml

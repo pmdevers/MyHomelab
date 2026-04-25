@@ -18,7 +18,7 @@ spec:
         kubernetes.io/hostname: k8s-node-4
       containers:
       - name: jellyfin
-        image: jellyfin/jellyfin:10.11.3
+        image: jellyfin/jellyfin:10.11.6
         env:
         - name: PUID
           value: "0"
@@ -41,18 +41,19 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /config/config
-          subPath: jellyfin/config
+          subPath: jellyfin_/config
         - name: config
           mountPath: /config/metadata
-          subPath: jellyfin/metadata
+          subPath: jellyfin_/metadata
         - name: config
           mountPath: /config/plugins
-          subPath: jellyfin/plugins
+          subPath: jellyfin_/plugins
         - name: config
           mountPath: /config/log
-          subPath: jellyfin/log
-        - name: data
+          subPath: jellyfin_/log
+        - name: config
           mountPath: /config/data
+          subPath: jellyfin_/data
         - name: cache
           mountPath: /cache
         - name: movies
@@ -65,9 +66,6 @@ spec:
       - name: config
         persistentVolumeClaim:
           claimName: nfs-config
-      - name: data
-        emptyDir:
-          sizeLimit: 10Gi
       - name: cache
         hostPath:
           path: /var/lib/jellyfin-cache
