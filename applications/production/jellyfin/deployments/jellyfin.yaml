@@ -35,11 +35,9 @@ spec:
           requests:
             cpu: 1000m
             memory: 3Gi
-            gpu.intel.com/i915: 1
           limits:
             cpu: 4000m
             memory: 6Gi
-            gpu.intel.com/i915: 1
         volumeMounts:
         - name: config
           mountPath: /config/config
