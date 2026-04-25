@@ -62,6 +62,8 @@ spec:
           mountPath: /tv
         - name: music
           mountPath: /music
+        - name: collections
+          mountPath: /collections
         - name: dri
           mountPath: /dev/dri
       volumes:
@@ -81,6 +83,9 @@ spec:
       - name: music
         persistentVolumeClaim:
           claimName: nfs-music
+      - name: collections
+        persistentVolumeClaim:
+          claimName: nfs-collections
       - name: dri
         hostPath:
           path: /dev/dri

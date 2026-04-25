@@ -79,6 +79,26 @@ spec:
     - nocto
 ---
 apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: nfs-collections
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: 172.20.10.2
+    path: /volume1/media/collections
+  mountOptions:
+    - nfsvers=4.1
+    - hard
+    - nolock
+    - async
+    - noacl
+    - nocto
+---
+apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: nfs-movies
@@ -130,6 +150,20 @@ spec:
     - ReadWriteMany
   storageClassName: ""
   volumeName: nfs-downloads
+  resources:
+    requests:
+      storage: 1Ti
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nfs-collections
+  namespace: jellyfin
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  volumeName: nfs-collections
   resources:
     requests:
       storage: 1Ti
