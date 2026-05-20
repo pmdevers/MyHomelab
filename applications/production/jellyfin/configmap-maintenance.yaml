@@ -29,34 +29,28 @@ data:
           IFS= read -r sources || continue
           if [ -z "$sources" ]; then
             echo "[skip] No sources provided"
-            4)
+            continue
+          fi
+          OLD_IFS="$IFS"
+          IFS='|'
+          set -- $sources
+          IFS="$OLD_IFS"
+          /maintenance/p0-makemkv.sh "$@"
+          ;;
+        2)
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            echo "[skip] ffmpeg is not available in this container"
+            continue
+          fi
           printf "Enter movie folder name(s), separated by | : "
           IFS= read -r titles || continue
           if [ -z "$titles" ]; then
-              /maintenance/p3-transcode-audio.sh "$scan_root"
+            echo "[skip] No titles provided"
             continue
-            5)
-              printf "Scan path [/movies]: "
-              IFS= read -r scan_root || true
-              scan_root="${scan_root:-/movies}"
-              /maintenance/p4-transcode-video.sh "$scan_root"
-              ;;
-            6)
-              printf "Scan path [/movies]: "
-              IFS= read -r scan_root || true
-              scan_root="${scan_root:-/movies}"
-              /maintenance/detect-playback-issues.sh "$scan_root"
-              ;;
-            7)
-              printf "Scan path [/movies]: "
-              IFS= read -r scan_root || true
-              scan_root="${scan_root:-/movies}"
-              /maintenance/auto-fix-playback-issues.sh "$scan_root"
-              ;;
-            8)
+          fi
           OLD_IFS="$IFS"
           IFS='|'
-            9)
+          set -- $titles
           IFS="$OLD_IFS"
           /maintenance/p1-remux.sh "$@"
           ;;
@@ -74,25 +68,25 @@ data:
           printf "Scan path [/movies]: "
           IFS= read -r scan_root || true
           scan_root="${scan_root:-/movies}"
-          /maintenance/detect-playback-issues.sh "$scan_root"
+          /maintenance/p3-transcode-audio.sh "$scan_root"
           ;;
         5)
           printf "Scan path [/movies]: "
           IFS= read -r scan_root || true
           scan_root="${scan_root:-/movies}"
-          /maintenance/auto-fix-playback-issues.sh "$scan_root"
+          /maintenance/p4-transcode-video.sh "$scan_root"
           ;;
         6)
           printf "Scan path [/movies]: "
           IFS= read -r scan_root || true
           scan_root="${scan_root:-/movies}"
-          /maintenance/p3-transcode-audio.sh "$scan_root"
+          /maintenance/detect-playback-issues.sh "$scan_root"
           ;;
         7)
           printf "Scan path [/movies]: "
           IFS= read -r scan_root || true
           scan_root="${scan_root:-/movies}"
-          /maintenance/p4-transcode-video.sh "$scan_root"
+          /maintenance/auto-fix-playback-issues.sh "$scan_root"
           ;;
         8)
           return 0 2>/dev/null || exit 0
