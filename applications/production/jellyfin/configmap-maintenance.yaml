@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jellyfin-maintenance-scripts
+  namespace: jellyfin
+data:
+  menu.sh: |
+    #!/bin/sh
+    set -eu
+
+    while true; do
+      echo
+      echo "Jellyfin maintenance menu"
+      echo "1) P1 remux movie folder(s)"
+      echo "2) P2 fix subtitle defaults"
+      echo "3) Open shell"
+      echo "4) Exit"
+      printf "Select an option: "
+      IFS= read -r choice || exit 0
+
+      case "$choice" in
+        1)
+          if ! command -v ffmpeg >/dev/null 2>&1; then
+            echo "[skip] ffmpeg is not available in this container"
+            continue
+          fi
+          printf "Enter movie folder name(s), separated by | : "
+          IFS= read -r titles || continue
+          if [ -z "$titles" ]; then
+            echo "[skip] No titles provided"
+            continue
+          fi
+          OLD_IFS="$IFS"
+          IFS='|'
+          set -- $titles
+          IFS="$OLD_IFS"
+          /maintenance/p1-remux.sh "$@"
+          ;;
+        2)
+          if ! command -v mkvmerge >/dev/null 2>&1; then
+            echo "[skip] mkvtoolnix is not available in this container"
+            continue
+          fi
+          printf "Scan path [/movies]: "
+          IFS= read -r scan_root || true
+          scan_root="${scan_root:-/movies}"
+          /maintenance/p2-subtitle-defaults.sh "$scan_root"
+          ;;
+        3)
+          return 0 2>/dev/null || exit 0
+          ;;
+        4)
+          exit 0
+          ;;
+        *)
+          echo "[skip] Invalid option"
+          ;;
+      esac
+    done
+  shrc.sh: |
+    #!/bin/sh
+    case "${JELLYFIN_MAINTENANCE_MENU_SHOWN:-}" in
+      1)
+        return 0 2>/dev/null || exit 0
+        ;;
+    esac
+
+    export JELLYFIN_MAINTENANCE_MENU_SHOWN=1
+
+    if [ -t 0 ] && [ -t 1 ] && [ -x /maintenance/menu.sh ]; then
+      /maintenance/menu.sh
+    fi
+
+  p1-remux.sh: |
+    #!/bin/sh
+    set -eu
+
+    if [ "$#" -eq 0 ]; then
+      echo "usage: p1-remux.sh <movie-folder> [movie-folder...]"
+      exit 1
+    fi
+
+    remux_title() {
+      title="$1"
+      dir="/movies/$title"
+
+      if [ ! -d "$dir" ]; then
+        echo "[skip] Missing folder: $dir"
+        return
+      fi
+
+      src="$(find "$dir" -maxdepth 2 -type f \( -iname '*.m2ts' -o -iname '*.ts' \) -print | head -n 1)"
+      if [ -z "$src" ]; then
+        echo "[skip] No ts/m2ts source found in: $dir"
+        return
+      fi
+
+      out="$dir/$title.mkv"
+      if [ -f "$out" ]; then
+        echo "[skip] Output already exists: $out"
+        return
+      fi
+
+      tmp="$dir/.remux.tmp.mkv"
+      echo "[run] $src -> $out"
+      ffmpeg -hide_banner -loglevel error -y -i "$src" -map 0 -c copy "$tmp"
+      mv -f "$tmp" "$out"
+      echo "[ok] Created: $out"
+    }
+
+    for title in "$@"; do
+      remux_title "$title"
+    done
+  p2-subtitle-defaults.sh: |
+    #!/bin/sh
+    set -eu
+
+    root="${1:-/movies}"
+    echo "[info] P2 subtitle-default fixer start on $root"
+
+    find "$root" -type f -iname '*.mkv' -print0 | while IFS= read -r -d '' f; do
+      text_idx=""
+      img_idxs=""
+      info="$(mkvmerge -i "$f" 2>/dev/null || true)"
+
+      if [ -z "$info" ]; then
+        echo "[skip] Could not inspect: $f"
+        continue
+      fi
+
+      text_idx="$(printf '%s\n' "$info" | awk 'BEGIN{c=0;t=0} /subtitles \(/ {c++; l=tolower($0); if(t==0 && l ~ /subrip|s_text|ssa|ass|webvtt|utf-8|utf8|usf|mov_text/) t=c} END{if(t>0) print t}')"
+      img_idxs="$(printf '%s\n' "$info" | awk 'BEGIN{c=0} /subtitles \(/ {c++; l=tolower($0); if(l ~ /pgs|hdmv|vobsub|dvd|dvb/) printf c " "}')"
+
+      if [ -z "$text_idx" ] || [ -z "$(echo "$img_idxs" | xargs)" ]; then
+        continue
+      fi
+
+      ok=1
+      for idx in $img_idxs; do
+        if ! mkvpropedit "$f" --edit "track:s$idx" --set flag-default=0 >/dev/null 2>&1; then
+          ok=0
+        fi
+      done
+      if ! mkvpropedit "$f" --edit "track:s$text_idx" --set flag-default=1 >/dev/null 2>&1; then
+        ok=0
+      fi
+
+      if [ "$ok" -eq 1 ]; then
+        echo "[fixed] $f"
+      else
+        echo "[fail] $f"
+      fi
+    done
+
+    echo "[info] P2 subtitle-default fixer end"

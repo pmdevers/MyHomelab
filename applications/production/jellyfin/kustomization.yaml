@@ -4,6 +4,7 @@ namespace: jellyfin
 resources:
   - namespace.yaml
   - configmap.yaml
+  - configmap-maintenance.yaml
   - configmap-postgres.yaml
   - externalsecret.yaml
   - deployments

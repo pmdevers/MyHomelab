@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin-maintenance
+  namespace: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin-maintenance
+  template:
+    metadata:
+      labels:
+        app: jellyfin-maintenance
+        app.kubernetes.io/part-of: jellyfin
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node-4
+      containers:
+      - name: tools
+        image: alpine:3.20
+        command:
+        - /bin/sh
+        - -lc
+        - apk add --no-cache ffmpeg mkvtoolnix && while true; do sleep 3600; done
+        env:
+        - name: ENV
+          value: /maintenance/shrc.sh
+        volumeMounts:
+        - name: maintenance-scripts
+          mountPath: /maintenance
+          readOnly: true
+        - name: movies
+          mountPath: /movies
+        - name: tv
+          mountPath: /tv
+      volumes:
+      - name: maintenance-scripts
+        configMap:
+          name: jellyfin-maintenance-scripts
+          defaultMode: 0755
+      - name: movies
+        persistentVolumeClaim:
+          claimName: nfs-movies
+      - name: tv
+        persistentVolumeClaim:
+          claimName: nfs-tv

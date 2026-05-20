@@ -1,0 +1,77 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: p2-subtitle-defaults
+  namespace: jellyfin
+spec:
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      nodeSelector:
+        kubernetes.io/hostname: k8s-node-4
+      containers:
+      - name: p2fix
+        image: jlesage/mkvtoolnix:latest
+        imagePullPolicy: IfNotPresent
+        command: ["/bin/sh", "-lc"]
+        args:
+        - |
+          set -eu
+          echo "[info] start"
+          total=0
+          touched=0
+          skipped=0
+          failed=0
+
+          find /movies -type f -iname '*.mkv' -print0 | while IFS= read -r -d '' f; do
+            total=$((total+1))
+            sub_idx=0
+            text_idx=0
+            img_idxs=""
+
+            info="$(mkvmerge -i "$f" 2>/dev/null || true)"
+            if [ -z "$info" ]; then
+              skipped=$((skipped+1))
+              continue
+            fi
+
+            text_idx="$(printf '%s\n' "$info" | awk 'BEGIN{c=0;t=0} /subtitles \(/ {c++; l=tolower($0); if(t==0 && l ~ /subrip|s_text|ssa|ass|webvtt|utf-8|utf8|usf|mov_text/) t=c} END{if(t>0) print t}')"
+            img_idxs="$(printf '%s\n' "$info" | awk 'BEGIN{c=0} /subtitles \(/ {c++; l=tolower($0); if(l ~ /pgs|hdmv|vobsub|dvd|dvb/) printf c " "}')"
+
+            if [ -z "$text_idx" ]; then
+              text_idx=0
+            fi
+
+            if [ "$text_idx" -gt 0 ] && [ -n "$(echo "$img_idxs" | xargs)" ]; then
+              ok=1
+              for i in $img_idxs; do
+                if ! mkvpropedit "$f" --edit "track:s$i" --set flag-default=0 >/dev/null 2>&1; then
+                  ok=0
+                fi
+              done
+              if ! mkvpropedit "$f" --edit "track:s$text_idx" --set flag-default=1 >/dev/null 2>&1; then
+                ok=0
+              fi
+
+              if [ "$ok" -eq 1 ]; then
+                touched=$((touched+1))
+                echo "[fixed] $f"
+              else
+                failed=$((failed+1))
+                echo "[fail] $f"
+              fi
+            else
+              skipped=$((skipped+1))
+            fi
+          done
+
+          echo "[summary] total=$total touched=$touched skipped=$skipped failed=$failed"
+          echo "[info] end"
+        volumeMounts:
+        - name: movies
+          mountPath: /movies
+      volumes:
+      - name: movies
+        persistentVolumeClaim:
+          claimName: nfs-movies
