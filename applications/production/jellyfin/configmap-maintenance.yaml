@@ -11,15 +11,31 @@ data:
     while true; do
       echo
       echo "Jellyfin maintenance menu"
-      echo "1) P1 remux movie folder(s)"
-      echo "2) P2 fix subtitle defaults"
-      echo "3) Open shell"
-      echo "4) Exit"
+      echo "1) P0 convert ISO/BDMV"
+      echo "2) P1 remux movie folder(s)"
+      echo "3) P2 fix subtitle defaults"
+      echo "4) Detect playback issues"
+      echo "5) Auto-fix playback issues"
+      echo "6) Open shell"
+      echo "7) Exit"
       printf "Select an option: "
       IFS= read -r choice || exit 0
 
       case "$choice" in
         1)
+          printf "Enter ISO or BDMV path(s), separated by | : "
+          IFS= read -r sources || continue
+          if [ -z "$sources" ]; then
+            echo "[skip] No sources provided"
+            continue
+          fi
+          OLD_IFS="$IFS"
+          IFS='|'
+          set -- $sources
+          IFS="$OLD_IFS"
+          /maintenance/p0-makemkv.sh "$@"
+          ;;
+        2)
           if ! command -v ffmpeg >/dev/null 2>&1; then
             echo "[skip] ffmpeg is not available in this container"
             continue
@@ -36,7 +52,7 @@ data:
           IFS="$OLD_IFS"
           /maintenance/p1-remux.sh "$@"
           ;;
-        2)
+        3)
           if ! command -v mkvmerge >/dev/null 2>&1; then
             echo "[skip] mkvtoolnix is not available in this container"
             continue
@@ -46,10 +62,22 @@ data:
           scan_root="${scan_root:-/movies}"
           /maintenance/p2-subtitle-defaults.sh "$scan_root"
           ;;
-        3)
+        4)
+          printf "Scan path [/movies]: "
+          IFS= read -r scan_root || true
+          scan_root="${scan_root:-/movies}"
+          /maintenance/detect-playback-issues.sh "$scan_root"
+          ;;
+        5)
+          printf "Scan path [/movies]: "
+          IFS= read -r scan_root || true
+          scan_root="${scan_root:-/movies}"
+          /maintenance/auto-fix-playback-issues.sh "$scan_root"
+          ;;
+        6)
           return 0 2>/dev/null || exit 0
           ;;
-        4)
+        7)
           exit 0
           ;;
         *)
@@ -71,18 +99,173 @@ data:
       /maintenance/menu.sh
     fi
 
+  bootstrap.sh: |
+    #!/bin/sh
+    set -eu
+
+    install_missing_tools() {
+      need_ffmpeg=0
+      need_mkvtoolnix=0
+
+      command -v ffmpeg >/dev/null 2>&1 || need_ffmpeg=1
+      command -v mkvmerge >/dev/null 2>&1 || need_mkvtoolnix=1
+
+      if [ "$need_ffmpeg" -eq 0 ] && [ "$need_mkvtoolnix" -eq 0 ]; then
+        return
+      fi
+
+      if command -v apk >/dev/null 2>&1; then
+        apk add --no-cache ffmpeg mkvtoolnix
+        return
+      fi
+
+      if command -v apt-get >/dev/null 2>&1; then
+        export DEBIAN_FRONTEND=noninteractive
+        apt-get update
+        apt-get install -y ffmpeg mkvtoolnix
+        rm -rf /var/lib/apt/lists/*
+        return
+      fi
+
+      echo "[warn] Could not install ffmpeg/mkvtoolnix automatically"
+    }
+
+    install_missing_tools
+
+    if ! command -v makemkvcon >/dev/null 2>&1 && [ ! -x /opt/makemkv/bin/makemkvcon ]; then
+      echo "[warn] MakeMKV binary not found in container"
+    fi
+
+    while true; do
+      sleep 3600
+    done
+
+  p0-makemkv.sh: |
+    #!/bin/sh
+    set -eu
+
+    if [ "$#" -eq 0 ]; then
+      echo "usage: p0-makemkv.sh <iso-or-bdmv-path> [iso-or-bdmv-path...]"
+      exit 1
+    fi
+
+    find_makemkv() {
+      if command -v makemkvcon >/dev/null 2>&1; then
+        command -v makemkvcon
+        return
+      fi
+      if [ -x /opt/makemkv/bin/makemkvcon ]; then
+        echo /opt/makemkv/bin/makemkvcon
+        return
+      fi
+      echo ""
+    }
+
+    makemkv_bin="$(find_makemkv)"
+    if [ -z "$makemkv_bin" ]; then
+      echo "[fail] MakeMKV binary not found"
+      exit 1
+    fi
+
+    convert_source() {
+      input="$1"
+      lower="$(printf '%s' "$input" | tr '[:upper:]' '[:lower:]')"
+
+      case "$lower" in
+        *.iso)
+          source="$input"
+          title_dir="$(dirname "$input")"
+          cleanup_target="$input"
+          ;;
+        */bdmv)
+          source="$input"
+          title_dir="$(dirname "$input")"
+          cleanup_target="$input"
+          ;;
+        *)
+          echo "[skip] Unsupported MakeMKV source: $input"
+          return
+          ;;
+      esac
+
+      if [ ! -e "$source" ]; then
+        echo "[skip] Missing source: $source"
+        return
+      fi
+
+      title="$(basename "$title_dir")"
+      out="$title_dir/$title.mkv"
+      if [ -f "$out" ]; then
+        echo "[skip] Output already exists: $out"
+        return
+      fi
+
+      tmp_dir="$title_dir/.makemkv-tmp"
+      tmp_list="$(mktemp)"
+      largest=""
+      largest_size=0
+
+      rm -rf "$tmp_dir"
+      mkdir -p "$tmp_dir"
+
+      echo "[run] $source -> $out"
+      if ! "$makemkv_bin" mkv "file:$source" all "$tmp_dir"; then
+        echo "[fail] MakeMKV conversion failed: $source"
+        rm -rf "$tmp_dir"
+        rm -f "$tmp_list"
+        return
+      fi
+
+      find "$tmp_dir" -type f -iname '*.mkv' -print > "$tmp_list"
+      while IFS= read -r candidate; do
+        [ -n "$candidate" ] || continue
+        size="$(wc -c < "$candidate" | tr -d '[:space:]')"
+        if [ "$size" -gt "$largest_size" ]; then
+          largest="$candidate"
+          largest_size="$size"
+        fi
+      done < "$tmp_list"
+
+      rm -f "$tmp_list"
+
+      if [ -z "$largest" ]; then
+        echo "[fail] No MKV output produced for: $source"
+        rm -rf "$tmp_dir"
+        return
+      fi
+
+      mv -f "$largest" "$out"
+      rm -rf "$tmp_dir"
+      rm -rf "$cleanup_target"
+      echo "[ok] Created: $out"
+      echo "[ok] Removed source: $cleanup_target"
+    }
+
+    for source in "$@"; do
+      convert_source "$source"
+    done
+
   p1-remux.sh: |
     #!/bin/sh
     set -eu
 
     if [ "$#" -eq 0 ]; then
-      echo "usage: p1-remux.sh <movie-folder> [movie-folder...]"
+      echo "usage: p1-remux.sh <movie-folder-or-path> [movie-folder-or-path...]"
       exit 1
     fi
 
     remux_title() {
-      title="$1"
-      dir="/movies/$title"
+      input="$1"
+      case "$input" in
+        /*)
+          dir="$input"
+          ;;
+        *)
+          dir="/movies/$input"
+          ;;
+      esac
+
+      title="$(basename "$dir")"
 
       if [ ! -d "$dir" ]; then
         echo "[skip] Missing folder: $dir"
@@ -153,3 +336,179 @@ data:
     done
 
     echo "[info] P2 subtitle-default fixer end"
+  auto-fix-playback-issues.sh: |
+    #!/bin/sh
+    set -eu
+
+    root="${1:-/movies}"
+    tmp_bdmv="$(mktemp)"
+    tmp_iso="$(mktemp)"
+    tmp_p0_sources="$(mktemp)"
+    tmp_stream_dirs="$(mktemp)"
+    tmp_stream_dirs_unique="$(mktemp)"
+    tmp_media="$(mktemp)"
+    fixed_p0=0
+    fixed_p1=0
+    manual_p3=0
+    manual_p4=0
+
+    cleanup() {
+      rm -f "$tmp_bdmv" "$tmp_iso" "$tmp_p0_sources" "$tmp_stream_dirs" "$tmp_stream_dirs_unique" "$tmp_media"
+    }
+    trap cleanup EXIT INT TERM
+
+    echo "[info] Auto-fix playback issues start on $root"
+
+    find "$root" -type d -iname BDMV -print > "$tmp_bdmv"
+    while IFS= read -r bdmv; do
+      [ -n "$bdmv" ] || continue
+      printf '%s\n' "$bdmv" >> "$tmp_p0_sources"
+    done < "$tmp_bdmv"
+
+    find "$root" -type f -iname '*.iso' -print > "$tmp_iso"
+    while IFS= read -r iso; do
+      [ -n "$iso" ] || continue
+      printf '%s\n' "$iso" >> "$tmp_p0_sources"
+    done < "$tmp_iso"
+
+    while IFS= read -r source; do
+      [ -n "$source" ] || continue
+      if /maintenance/p0-makemkv.sh "$source"; then
+        fixed_p0=$((fixed_p0 + 1))
+      fi
+    done < "$tmp_p0_sources"
+
+    find "$root" -type f \( -iname '*.m2ts' -o -iname '*.ts' \) -exec dirname {} \; > "$tmp_stream_dirs"
+    sort -u "$tmp_stream_dirs" > "$tmp_stream_dirs_unique"
+
+    while IFS= read -r dir; do
+      [ -n "$dir" ] || continue
+      /maintenance/p1-remux.sh "$dir"
+      fixed_p1=$((fixed_p1 + 1))
+    done < "$tmp_stream_dirs_unique"
+
+    /maintenance/p2-subtitle-defaults.sh "$root"
+
+    find "$root" -type f \( -iname '*.mkv' -o -iname '*.mp4' -o -iname '*.avi' \) -print > "$tmp_media"
+    while IFS= read -r file; do
+      [ -n "$file" ] || continue
+      audio_codecs="$(ffprobe -v error -select_streams a -show_entries stream=codec_name -of csv=p=0 "$file" 2>/dev/null || true)"
+      bitrate="$(ffprobe -v error -show_entries format=bit_rate -of default=nokey=1:noprint_wrappers=1 "$file" 2>/dev/null | tr -d '\r' | head -n 1)"
+      audio_lc="$(printf '%s' "$audio_codecs" | tr '[:upper:]' '[:lower:]')"
+
+      case "$audio_lc" in
+        *truehd*|*dts*|*flac*|*pcm_*|*mlp*)
+          manual_p3=$((manual_p3 + 1))
+          echo "[manual][P3][audio] $file | codec conversion not automated: $audio_codecs"
+          ;;
+      esac
+
+      if [ -n "$bitrate" ] && [ "$bitrate" -ge 40000000 ] 2>/dev/null; then
+        manual_p4=$((manual_p4 + 1))
+        mbps=$((bitrate / 1000000))
+        echo "[manual][P4][bitrate] $file | consider a lighter encode or client-side limit: ${mbps} Mbps"
+      fi
+    done < "$tmp_media"
+
+    echo "[summary] fixed_p0=$fixed_p0 fixed_p1=$fixed_p1 fixed_p2=path-scan manual_p3=$manual_p3 manual_p4=$manual_p4"
+    echo "[info] Auto-fix playback issues end"
+  detect-playback-issues.sh: |
+    #!/bin/sh
+    set -eu
+
+    root="${1:-/movies}"
+    tmp_files="$(mktemp)"
+    tmp_bdmv="$(mktemp)"
+    total=0
+    issues=0
+    p0=0
+    p1=0
+    p2=0
+    p3=0
+    p4=0
+
+    cleanup() {
+      rm -f "$tmp_files" "$tmp_bdmv"
+    }
+    trap cleanup EXIT INT TERM
+
+    echo "[info] Playback issue scan start on $root"
+
+    find "$root" -type d -iname BDMV -print > "$tmp_bdmv"
+    while IFS= read -r bdmv; do
+      [ -n "$bdmv" ] || continue
+      issues=$((issues + 1))
+      p0=$((p0 + 1))
+      echo "[P0][bdmv] $bdmv"
+    done < "$tmp_bdmv"
+
+    find "$root" -type f \( -iname '*.mkv' -o -iname '*.mp4' -o -iname '*.avi' -o -iname '*.iso' -o -iname '*.m2ts' -o -iname '*.ts' \) -print > "$tmp_files"
+
+    while IFS= read -r file; do
+      [ -n "$file" ] || continue
+      total=$((total + 1))
+
+      lower="$(printf '%s' "$file" | tr '[:upper:]' '[:lower:]')"
+
+      case "$lower" in
+        *.iso)
+          issues=$((issues + 1))
+          p0=$((p0 + 1))
+          echo "[P0][iso] $file"
+          continue
+          ;;
+        *.m2ts|*.ts)
+          issues=$((issues + 1))
+          p1=$((p1 + 1))
+          echo "[P1][container] $file | raw transport stream, remux to mkv"
+          continue
+          ;;
+      esac
+
+      subtitle_codecs="$(ffprobe -v error -select_streams s -show_entries stream=codec_name -of csv=p=0 "$file" 2>/dev/null || true)"
+      audio_codecs="$(ffprobe -v error -select_streams a -show_entries stream=codec_name -of csv=p=0 "$file" 2>/dev/null || true)"
+      bitrate="$(ffprobe -v error -show_entries format=bit_rate -of default=nokey=1:noprint_wrappers=1 "$file" 2>/dev/null | tr -d '\r' | head -n 1)"
+
+      has_text_sub=0
+      has_image_sub=0
+      if [ -n "$subtitle_codecs" ]; then
+        printf '%s\n' "$subtitle_codecs" | while IFS= read -r codec; do
+          :
+        done >/dev/null 2>&1 || true
+        case "$(printf '%s' "$subtitle_codecs" | tr '[:upper:]' '[:lower:]')" in
+          *subrip*|*ass*|*ssa*|*webvtt*|*mov_text*)
+            has_text_sub=1
+            ;;
+        esac
+        case "$(printf '%s' "$subtitle_codecs" | tr '[:upper:]' '[:lower:]')" in
+          *hdmv_pgs_subtitle*|*dvd_subtitle*|*xsub*|*dvb_subtitle*|*vobsub*)
+            has_image_sub=1
+            ;;
+        esac
+      fi
+
+      if [ "$has_image_sub" -eq 1 ] && [ "$has_text_sub" -eq 0 ]; then
+        issues=$((issues + 1))
+        p2=$((p2 + 1))
+        echo "[P2][subtitles] $file | image subtitles only, likely subtitle-triggered transcoding"
+      fi
+
+      audio_lc="$(printf '%s' "$audio_codecs" | tr '[:upper:]' '[:lower:]')"
+      case "$audio_lc" in
+        *truehd*|*dts*|*flac*|*pcm_*|*mlp*)
+          issues=$((issues + 1))
+          p3=$((p3 + 1))
+          echo "[P3][audio] $file | high-risk client audio codec(s): $audio_codecs"
+          ;;
+      esac
+
+      if [ -n "$bitrate" ] && [ "$bitrate" -ge 40000000 ] 2>/dev/null; then
+        mbps=$((bitrate / 1000000))
+        issues=$((issues + 1))
+        p4=$((p4 + 1))
+        echo "[P4][bitrate] $file | ${mbps} Mbps direct-play risk"
+      fi
+    done < "$tmp_files"
+
+    echo "[summary] scanned=$total issues=$issues p0=$p0 p1=$p1 p2=$p2 p3=$p3 p4=$p4"
+    echo "[info] Playback issue scan end"

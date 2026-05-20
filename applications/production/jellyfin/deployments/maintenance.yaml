@@ -18,11 +18,11 @@ spec:
         kubernetes.io/hostname: k8s-node-4
       containers:
       - name: tools
-        image: alpine:3.20
+        image: jlesage/makemkv:latest
         command:
         - /bin/sh
         - -lc
-        - apk add --no-cache ffmpeg mkvtoolnix && while true; do sleep 3600; done
+        - /maintenance/bootstrap.sh
         env:
         - name: ENV
           value: /maintenance/shrc.sh
@@ -34,6 +34,8 @@ spec:
           mountPath: /movies
         - name: tv
           mountPath: /tv
+        - name: makemkv-cache
+          mountPath: /root/.MakeMKV
       volumes:
       - name: maintenance-scripts
         configMap:
@@ -45,3 +47,5 @@ spec:
       - name: tv
         persistentVolumeClaim:
           claimName: nfs-tv
+      - name: makemkv-cache
+        emptyDir: {}
