@@ -392,23 +392,11 @@ data:
       base="$(basename "$file")"
       name="${base%.*}"
       ext="${base##*.}"
-      tmp_out="$dir/.${name}.p3fix.mkv"
+      tmp_out="$(mktemp -p /tmp "${name}.p3fix.XXXXXX.mkv")"
       final_out="$dir/$name.mkv"
 
-      if [ -f "$final_out" ] && [ "$ext" = "mkv" ]; then
-        echo "[skip] Output already exists: $final_out"
-        skipped=$((skipped + 1))
-        continue
-      fi
-
-      if [ -f "$final_out" ] && [ "$ext" != "mkv" ]; then
-        echo "[skip] Target already exists, leaving source in place: $final_out"
-        skipped=$((skipped + 1))
-        continue
-      fi
-
       echo "[run] $file -> $final_out"
-      if ! ffmpeg -hide_banner -loglevel error -y -i "$file" -map 0 -c:v copy -c:s copy -c:t copy -c:a ac3 -b:a 640k "$tmp_out"; then
+      if ! ffmpeg -nostdin -hide_banner -loglevel error -y -i "$file" -map 0 -c:v copy -c:s copy -c:t copy -c:a ac3 -b:a 640k "$tmp_out"; then
         echo "[fail] Audio transcode failed: $file"
         rm -f "$tmp_out"
         continue
@@ -459,11 +447,11 @@ data:
       dir="$(dirname "$file")"
       base="$(basename "$file")"
       name="${base%.*}"
-      tmp_out="$dir/.${name}.p4fix.mkv"
+      tmp_out="$(mktemp -p /tmp "${name}.p4fix.XXXXXX.mkv")"
       final_out="$dir/$name.mkv"
 
       echo "[run] $file -> $final_out"
-      if ! ffmpeg -hide_banner -loglevel error -y -i "$file" -map 0 -c:v libx264 -preset medium -crf 21 -pix_fmt yuv420p -c:a aac -b:a 192k -c:s copy -c:t copy "$tmp_out"; then
+      if ! ffmpeg -nostdin -hide_banner -loglevel error -y -i "$file" -map 0 -c:v libx264 -preset medium -crf 21 -pix_fmt yuv420p -c:a aac -b:a 192k -c:s copy -c:t copy "$tmp_out"; then
         echo "[fail] Video transcode failed: $file"
         rm -f "$tmp_out"
         continue
