@@ -14,10 +14,12 @@ data:
       echo "1) P0 convert ISO/BDMV"
       echo "2) P1 remux movie folder(s)"
       echo "3) P2 fix subtitle defaults"
-      echo "4) Detect playback issues"
-      echo "5) Auto-fix playback issues"
-      echo "6) Open shell"
-      echo "7) Exit"
+      echo "4) P3 transcode audio"
+      echo "5) P4 transcode video"
+      echo "6) Detect playback issues"
+      echo "7) Auto-fix playback issues"
+      echo "8) Open shell"
+      echo "9) Exit"
       printf "Select an option: "
       IFS= read -r choice || exit 0
 
@@ -27,28 +29,34 @@ data:
           IFS= read -r sources || continue
           if [ -z "$sources" ]; then
             echo "[skip] No sources provided"
-            continue
-          fi
-          OLD_IFS="$IFS"
-          IFS='|'
-          set -- $sources
-          IFS="$OLD_IFS"
-          /maintenance/p0-makemkv.sh "$@"
-          ;;
-        2)
-          if ! command -v ffmpeg >/dev/null 2>&1; then
-            echo "[skip] ffmpeg is not available in this container"
-            continue
-          fi
+            4)
           printf "Enter movie folder name(s), separated by | : "
           IFS= read -r titles || continue
           if [ -z "$titles" ]; then
-            echo "[skip] No titles provided"
+              /maintenance/p3-transcode-audio.sh "$scan_root"
             continue
-          fi
+            5)
+              printf "Scan path [/movies]: "
+              IFS= read -r scan_root || true
+              scan_root="${scan_root:-/movies}"
+              /maintenance/p4-transcode-video.sh "$scan_root"
+              ;;
+            6)
+              printf "Scan path [/movies]: "
+              IFS= read -r scan_root || true
+              scan_root="${scan_root:-/movies}"
+              /maintenance/detect-playback-issues.sh "$scan_root"
+              ;;
+            7)
+              printf "Scan path [/movies]: "
+              IFS= read -r scan_root || true
+              scan_root="${scan_root:-/movies}"
+              /maintenance/auto-fix-playback-issues.sh "$scan_root"
+              ;;
+            8)
           OLD_IFS="$IFS"
           IFS='|'
-          set -- $titles
+            9)
           IFS="$OLD_IFS"
           /maintenance/p1-remux.sh "$@"
           ;;
@@ -75,9 +83,21 @@ data:
           /maintenance/auto-fix-playback-issues.sh "$scan_root"
           ;;
         6)
-          return 0 2>/dev/null || exit 0
+          printf "Scan path [/movies]: "
+          IFS= read -r scan_root || true
+          scan_root="${scan_root:-/movies}"
+          /maintenance/p3-transcode-audio.sh "$scan_root"
           ;;
         7)
+          printf "Scan path [/movies]: "
+          IFS= read -r scan_root || true
+          scan_root="${scan_root:-/movies}"
+          /maintenance/p4-transcode-video.sh "$scan_root"
+          ;;
+        8)
+          return 0 2>/dev/null || exit 0
+          ;;
+        9)
           exit 0
           ;;
         *)
@@ -336,6 +356,135 @@ data:
     done
 
     echo "[info] P2 subtitle-default fixer end"
+  p3-transcode-audio.sh: |
+    #!/bin/sh
+    set -eu
+
+    root="${1:-/movies}"
+    tmp_files="$(mktemp)"
+    fixed=0
+    skipped=0
+
+    cleanup() {
+      rm -f "$tmp_files"
+    }
+    trap cleanup EXIT INT TERM
+
+    if ! command -v ffmpeg >/dev/null 2>&1; then
+      echo "[fail] ffmpeg is not available in this container"
+      exit 1
+    fi
+
+    echo "[info] P3 audio transcode start on $root"
+
+    find "$root" -type f \( -iname '*.mkv' -o -iname '*.mp4' -o -iname '*.avi' \) -print > "$tmp_files"
+
+    while IFS= read -r file; do
+      [ -n "$file" ] || continue
+
+      audio_codecs="$(ffprobe -v error -select_streams a -show_entries stream=codec_name -of csv=p=0 "$file" 2>/dev/null || true)"
+      audio_lc="$(printf '%s' "$audio_codecs" | tr '[:upper:]' '[:lower:]')"
+
+      case "$audio_lc" in
+        *truehd*|*dts*|*flac*|*pcm_*|*mlp*)
+          ;;
+        *)
+          skipped=$((skipped + 1))
+          continue
+          ;;
+      esac
+
+      dir="$(dirname "$file")"
+      base="$(basename "$file")"
+      name="${base%.*}"
+      ext="${base##*.}"
+      tmp_out="$dir/.${name}.p3fix.mkv"
+      final_out="$dir/$name.mkv"
+
+      if [ -f "$final_out" ] && [ "$ext" = "mkv" ]; then
+        echo "[skip] Output already exists: $final_out"
+        skipped=$((skipped + 1))
+        continue
+      fi
+
+      if [ -f "$final_out" ] && [ "$ext" != "mkv" ]; then
+        echo "[skip] Target already exists, leaving source in place: $final_out"
+        skipped=$((skipped + 1))
+        continue
+      fi
+
+      echo "[run] $file -> $final_out"
+      if ! ffmpeg -hide_banner -loglevel error -y -i "$file" -map 0 -c:v copy -c:s copy -c:t copy -c:a ac3 -b:a 640k "$tmp_out"; then
+        echo "[fail] Audio transcode failed: $file"
+        rm -f "$tmp_out"
+        continue
+      fi
+
+      mv -f "$tmp_out" "$final_out"
+      if [ "$ext" != "mkv" ]; then
+        rm -f "$file"
+      fi
+      fixed=$((fixed + 1))
+      echo "[ok] Created: $final_out"
+    done < "$tmp_files"
+
+    echo "[summary] fixed=$fixed skipped=$skipped"
+    echo "[info] P3 audio transcode end"
+  p4-transcode-video.sh: |
+    #!/bin/sh
+    set -eu
+
+    root="${1:-/movies}"
+    tmp_files="$(mktemp)"
+    fixed=0
+    skipped=0
+
+    cleanup() {
+      rm -f "$tmp_files"
+    }
+    trap cleanup EXIT INT TERM
+
+    if ! command -v ffmpeg >/dev/null 2>&1; then
+      echo "[fail] ffmpeg is not available in this container"
+      exit 1
+    fi
+
+    echo "[info] P4 video transcode start on $root"
+
+    find "$root" -type f \( -iname '*.mkv' -o -iname '*.mp4' -o -iname '*.avi' \) -print > "$tmp_files"
+
+    while IFS= read -r file; do
+      [ -n "$file" ] || continue
+
+      bitrate="$(ffprobe -v error -show_entries format=bit_rate -of default=nokey=1:noprint_wrappers=1 "$file" 2>/dev/null | tr -d '\r' | head -n 1)"
+      if [ -z "$bitrate" ] || [ "$bitrate" -lt 40000000 ] 2>/dev/null; then
+        skipped=$((skipped + 1))
+        continue
+      fi
+
+      dir="$(dirname "$file")"
+      base="$(basename "$file")"
+      name="${base%.*}"
+      tmp_out="$dir/.${name}.p4fix.mkv"
+      final_out="$dir/$name.mkv"
+
+      echo "[run] $file -> $final_out"
+      if ! ffmpeg -hide_banner -loglevel error -y -i "$file" -map 0 -c:v libx264 -preset medium -crf 21 -pix_fmt yuv420p -c:a aac -b:a 192k -c:s copy -c:t copy "$tmp_out"; then
+        echo "[fail] Video transcode failed: $file"
+        rm -f "$tmp_out"
+        continue
+      fi
+
+      mv -f "$tmp_out" "$final_out"
+      if [ "${base##*.}" != "mkv" ]; then
+        rm -f "$file"
+      fi
+      fixed=$((fixed + 1))
+      echo "[ok] Created: $final_out"
+    done < "$tmp_files"
+
+    echo "[summary] fixed=$fixed skipped=$skipped"
+    echo "[info] P4 video transcode end"
   auto-fix-playback-issues.sh: |
     #!/bin/sh
     set -eu
@@ -349,6 +498,8 @@ data:
     tmp_media="$(mktemp)"
     fixed_p0=0
     fixed_p1=0
+    fixed_p3=0
+    fixed_p4=0
     manual_p3=0
     manual_p4=0
 
@@ -390,6 +541,31 @@ data:
     /maintenance/p2-subtitle-defaults.sh "$root"
 
     find "$root" -type f \( -iname '*.mkv' -o -iname '*.mp4' -o -iname '*.avi' \) -print > "$tmp_media"
+
+    while IFS= read -r file; do
+      [ -n "$file" ] || continue
+      audio_codecs="$(ffprobe -v error -select_streams a -show_entries stream=codec_name -of csv=p=0 "$file" 2>/dev/null || true)"
+      audio_lc="$(printf '%s' "$audio_codecs" | tr '[:upper:]' '[:lower:]')"
+
+      case "$audio_lc" in
+        *truehd*|*dts*|*flac*|*pcm_*|*mlp*)
+          if /maintenance/p3-transcode-audio.sh "$file"; then
+            fixed_p3=$((fixed_p3 + 1))
+          fi
+          ;;
+      esac
+    done < "$tmp_media"
+
+    while IFS= read -r file; do
+      [ -n "$file" ] || continue
+      bitrate="$(ffprobe -v error -show_entries format=bit_rate -of default=nokey=1:noprint_wrappers=1 "$file" 2>/dev/null | tr -d '\r' | head -n 1)"
+      if [ -n "$bitrate" ] && [ "$bitrate" -ge 40000000 ] 2>/dev/null; then
+        if /maintenance/p4-transcode-video.sh "$file"; then
+          fixed_p4=$((fixed_p4 + 1))
+        fi
+      fi
+    done < "$tmp_media"
+
     while IFS= read -r file; do
       [ -n "$file" ] || continue
       audio_codecs="$(ffprobe -v error -select_streams a -show_entries stream=codec_name -of csv=p=0 "$file" 2>/dev/null || true)"
@@ -410,7 +586,7 @@ data:
       fi
     done < "$tmp_media"
 
-    echo "[summary] fixed_p0=$fixed_p0 fixed_p1=$fixed_p1 fixed_p2=path-scan manual_p3=$manual_p3 manual_p4=$manual_p4"
+    echo "[summary] fixed_p0=$fixed_p0 fixed_p1=$fixed_p1 fixed_p2=path-scan fixed_p3=$fixed_p3 fixed_p4=$fixed_p4 manual_p4=$manual_p4"
     echo "[info] Auto-fix playback issues end"
   detect-playback-issues.sh: |
     #!/bin/sh
