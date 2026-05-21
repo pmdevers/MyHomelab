@@ -215,7 +215,7 @@ data:
       fi
 
       tmp_dir="$title_dir/.makemkv-tmp"
-      tmp_list="$(mktemp)"
+      tmp_list="$(mktemp "${TMPDIR:-/tmp}/jf-p0.XXXXXX")"
       largest=""
       largest_size=0
 
@@ -355,7 +355,7 @@ data:
     set -eu
 
     root="${1:-/movies}"
-    tmp_files="$(mktemp)"
+    tmp_files="$(mktemp "${TMPDIR:-/tmp}/jf-p3-files.XXXXXX")"
     fixed=0
     skipped=0
 
@@ -392,7 +392,9 @@ data:
       base="$(basename "$file")"
       name="${base%.*}"
       ext="${base##*.}"
-      tmp_out="$(mktemp -p /tmp "${name}.p3fix.XXXXXX.mkv")"
+      tmp_base="$(mktemp "${TMPDIR:-/tmp}/${name}.p3fix.XXXXXX")"
+      tmp_out="${tmp_base}.mkv"
+      mv -f "$tmp_base" "$tmp_out"
       final_out="$dir/$name.mkv"
 
       echo "[run] $file -> $final_out"
@@ -417,7 +419,7 @@ data:
     set -eu
 
     root="${1:-/movies}"
-    tmp_files="$(mktemp)"
+    tmp_files="$(mktemp "${TMPDIR:-/tmp}/jf-p4-files.XXXXXX")"
     fixed=0
     skipped=0
 
@@ -447,7 +449,9 @@ data:
       dir="$(dirname "$file")"
       base="$(basename "$file")"
       name="${base%.*}"
-      tmp_out="$(mktemp -p /tmp "${name}.p4fix.XXXXXX.mkv")"
+      tmp_base="$(mktemp "${TMPDIR:-/tmp}/${name}.p4fix.XXXXXX")"
+      tmp_out="${tmp_base}.mkv"
+      mv -f "$tmp_base" "$tmp_out"
       final_out="$dir/$name.mkv"
 
       echo "[run] $file -> $final_out"
@@ -472,12 +476,12 @@ data:
     set -eu
 
     root="${1:-/movies}"
-    tmp_bdmv="$(mktemp)"
-    tmp_iso="$(mktemp)"
-    tmp_p0_sources="$(mktemp)"
-    tmp_stream_dirs="$(mktemp)"
-    tmp_stream_dirs_unique="$(mktemp)"
-    tmp_media="$(mktemp)"
+    tmp_bdmv="$(mktemp "${TMPDIR:-/tmp}/jf-auto-bdmv.XXXXXX")"
+    tmp_iso="$(mktemp "${TMPDIR:-/tmp}/jf-auto-iso.XXXXXX")"
+    tmp_p0_sources="$(mktemp "${TMPDIR:-/tmp}/jf-auto-p0.XXXXXX")"
+    tmp_stream_dirs="$(mktemp "${TMPDIR:-/tmp}/jf-auto-stream.XXXXXX")"
+    tmp_stream_dirs_unique="$(mktemp "${TMPDIR:-/tmp}/jf-auto-stream-uniq.XXXXXX")"
+    tmp_media="$(mktemp "${TMPDIR:-/tmp}/jf-auto-media.XXXXXX")"
     fixed_p0=0
     fixed_p1=0
     fixed_p3=0
@@ -575,8 +579,8 @@ data:
     set -eu
 
     root="${1:-/movies}"
-    tmp_files="$(mktemp)"
-    tmp_bdmv="$(mktemp)"
+    tmp_files="$(mktemp "${TMPDIR:-/tmp}/jf-detect-files.XXXXXX")"
+    tmp_bdmv="$(mktemp "${TMPDIR:-/tmp}/jf-detect-bdmv.XXXXXX")"
     total=0
     issues=0
     p0=0
