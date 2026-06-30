@@ -17,4 +17,4 @@ spec:
   images:
     - name: ghcr.io/pmdevers/patrick-evers
       newName: ghcr.io/pmdevers/patrick-evers # {"$imagepolicy": "flux-system:patrick-evers:name"}
-      newTag: main-59f4259-1782853574 # {"$imagepolicy": "flux-system:patrick-evers:tag"}
+      newTag: main-ee060be-1782856332 # {"$imagepolicy": "flux-system:patrick-evers:tag"}
