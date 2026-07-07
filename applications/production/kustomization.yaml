@@ -4,7 +4,7 @@ resources:
 #- gitopsdemo
 - patrick-evers
 - weaxle78
-#- kafka-adventure
+- kafka-adventure
 #- advisor-nest
 #- adviseur-portaal
 - jellyfin
