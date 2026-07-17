@@ -4,6 +4,8 @@ kind: Kustomization
 resources:
 - gitrepository.yaml
 - externalsecret-ghcr.yaml
+- externalsecret-ghcr-runtime.yaml
+- serviceaccount-default.yaml
 - image-repository.yaml
 - image-policy.yaml
 - image-automation.yaml
