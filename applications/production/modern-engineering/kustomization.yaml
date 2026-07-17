@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
 - gitrepository.yaml
+- externalsecret-ghcr.yaml
 - image-repository.yaml
 - image-policy.yaml
 - image-automation.yaml
