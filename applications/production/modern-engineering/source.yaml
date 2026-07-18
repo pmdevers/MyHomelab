@@ -17,4 +17,4 @@ spec:
   images:
     - name: ghcr.io/modernengineering/website
       newName: ghcr.io/modernengineering/website # {"$imagepolicy": "flux-system:modernengineering-alpha:name"}
-      newTag: v0.0.1-alpha002 # {"$imagepolicy": "flux-system:modernengineering-alpha:tag"}
+      newTag: v0.0.1-alpha003 # {"$imagepolicy": "flux-system:modernengineering-alpha:tag"}
