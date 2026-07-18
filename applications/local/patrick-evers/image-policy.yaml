@@ -1,4 +1,4 @@
-apiVersion: image.toolkit.fluxcd.io/v1beta2
+apiVersion: image.toolkit.fluxcd.io/v1
 kind: ImagePolicy
 metadata:
   name: patrick-evers
@@ -12,7 +12,7 @@ spec:
   policy:
     numerical:
       order: asc
-# apiVersion: image.toolkit.fluxcd.io/v1beta2
+# apiVersion: image.toolkit.fluxcd.io/v1
 # kind: ImagePolicy
 # metadata:
 #   name: patrick-evers
